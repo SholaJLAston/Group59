@@ -1,0 +1,30 @@
+#backgroundLogo{
+    background-image: url('../images/background_logo.png');
+    background-repeat: no-repeat;
+    width:100%; height:9%;
+    background-size:100% 100%;
+    opacity: 0.91;
+    margin: 0;
+    display:flex; justify-content: center;
+}
+
+div.flexLinks{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width:100%; height:100%;
+}
+a.flexLinks{
+    padding-left: 21px;
+    padding-right: 21px;
+}
+a:hover.flexLinks{
+    background-color: #D47C17;
+}
+
+
+body{
+    background-color: #070707;
+    color: #FFFFFF;
+}
