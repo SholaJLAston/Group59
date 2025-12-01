@@ -10,8 +10,8 @@ return new class extends Migration {
     public function up() : void {
         Schema::create('basket_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('basket_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('basket_id')->constrained('baskets')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->unsignedSmallInteger('quantity')->default(1);
             $table->timestamps();
         });
