@@ -13,7 +13,7 @@ class ProductController extends Controller
         return view('product.index', ['products' => $products]);
     }
 
-    public function show($id) {
-        return view('products.show', compact('id'));
+    public function show($product) {
+        return view('products.show', compact('product'));
     }
 }
