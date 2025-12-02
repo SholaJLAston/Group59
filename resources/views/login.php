@@ -1,3 +1,7 @@
+<?php
+    include("header.html");
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,21 +10,9 @@
     <title>Account Log In - Apex Hardware</title>
 
     
-    <link rel="stylesheet" href="../StyleSheets/index.css">
+    <link rel="stylesheet" href="../css/Main.css">
 </head>
 <body>
-    <div id="backgroundLogo">
-        <img src="../images/main_logo.png" width="299px" height="251px" style="opacity: 0.85;">
-    </div>
-
-    <div class="flexLinks">
-        <a href="aboutus.html" class="flexLinks"><p>About Us</p></a>
-        <a href="contactus.html" class="flexLinks"><p>Contact Us</p></a>
-        <a href="shopnow.html" class="flexLinks"><p>Shop Now</p></a>
-        <a href="signup.html" class="flexLinks"><p>Sign Up</p></a>
-        <a href="login.html" class="flexLinks"><p>Account Log In</p></a>
-    </div>
-
     <div class="auth-wrapper">
         <div class="auth-card">
             <h1 class="auth-title">Account Log In</h1>
@@ -41,7 +33,7 @@
 
                 <p class="auth-switch">
                     Don’t have an account yet?
-                    <a href="signup.html">Create one</a>
+                    <a href="signup.php">Create one</a>
                 </p>
             </form>
         </div>
