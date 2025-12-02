@@ -1,5 +1,5 @@
 <?php
-
+    include("header.html");
 ?>
 
 <!DOCTYPE html>
@@ -9,10 +9,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Short description of page">
 
+        <title>Index</title>
+
         <!-- Resources -->
-        <link rel="stylesheet" href="../StyleSheets/mainColours.css">
+         <link rel="stylesheet" href="Web_resources/StyleSheets/Main.css">
+         
     </head>
     <body>
-        <h1>products page</h1>
+        <h1>Index Page</h1>
     </body>
 </html>
