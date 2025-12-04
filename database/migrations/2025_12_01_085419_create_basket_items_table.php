@@ -13,7 +13,6 @@ return new class extends Migration {
             $table->foreignId('basket_id')->constrained('baskets')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->unsignedSmallInteger('quantity')->default(1);
-            $table->unique(['basket_id', 'product_id']);
             $table->timestamps();
         });
     }
