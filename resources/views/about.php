@@ -8,214 +8,262 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Contact Us | Apex Hardware Supply & Tools</title>
+  <title>About Us | Apex Hardware Supply & Tools</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root {
       --orange: #D47C17;
       --black: #070707;
+      --dark-grey: #1a1a1a;
       --grey: #707070;
       --white: #FFFFFF;
-      --light: #f9f9f9;
+      --light: #f8f8f8;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: var(--white);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--white);
       color: #333;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
-    /* Hero - EXACTLY like your original */
+    /* HERO – Dark grey + black mix */
     .hero {
-      background: var(--black);
+      background: linear-gradient(rgba(26,26,26,0.96), rgba(7,7,7,0.98)),
+                  url('https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') center/cover;
       color: white;
       text-align: center;
-      padding: 120px 20px;
+      padding: 140px 20px 100px;
     }
     .hero h1 {
-      font-size: 3.8rem;
+      font-size: 4.2rem;
+      font-weight: 900;
       color: var(--orange);
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
-    .hero p { 
-      font-size: 1.3rem; 
-      opacity: 0.9; 
+    .hero p {
+      font-size: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+      opacity: 0.92;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 80px 20px 0;
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+    .section-title {
+      font-size: 2.8rem;
+      color: var(--orange);
+      text-align: center;
+      margin: 80px 0 50px;
+      font-weight: 700;
+    }
+
+    /* Our Story */
+    .story-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+      margin: 60px 0;
+    }
+    .story-row img {
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+    }
+    .story-text h2 {
+      color: var(--orange);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    /* Vision Quote */
+    .vision {
+      background: var(--light);
+      padding: 70px 40px;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 2.3rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--orange);
+      border-left: 12px solid var(--orange);
+      margin: 100px auto;
+      max-width: 1000px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.09);
+    }
+
+    /* Vision & Scope + We Serve – Side by Side (unchanged) */
+    .vision-scope-section {
+      background: var(--light);
+      padding: 90px 40px;
+      border-radius: 20px;
+      margin: 100px auto;
+      max-width: 1300px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 80px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     }
-
-    /* Contact Info */
-    .contact-info h2, .contact-form h2 {
+    .vision-box, .audience-box {
+      padding: 20px;
+    }
+    .vision-box h3, .audience-box h3 {
       color: var(--orange);
-      margin-bottom: 30px;
       font-size: 2.2rem;
-    }
-    .info-item {
-      display: flex;
-      gap: 15px;
       margin-bottom: 25px;
-      align-items: flex-start;
+      text-align: center;
     }
-    .info-item i {
+    .vision-box p {
+      font-size: 1.2rem;
+      text-align: center;
+      line-height: 1.9;
+    }
+    .audience-box ul {
+      list-style: none;
+      font-size: 1.2rem;
+    }
+    .audience-box li {
+      padding: 12px 0;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .audience-box li i {
       color: var(--orange);
       font-size: 1.4rem;
-      margin-top: 4px;
     }
 
-    /* Form - YOUR REQUESTED FIELDS ONLY */
-    form {
+    /* Why Choose Apex – NOW PERFECTLY RESPONSIVE (2×2 on laptop, 1 column on mobile) */
+    .cards {
       display: grid;
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);   /* 4 cards in one row on large screens */
+      gap: 35px;
+      margin: 100px 0;
+      padding: 0 20px;
     }
-    input, textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: var(--orange);
-    }
-    textarea { 
-      min-height: 140px;
-      resize: vertical;
-    }
-    button {
-      background: var(--orange);
-      color: white;
-      padding: 16px;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover { 
-      background: #b86b12; 
-    }
-
-    /* Map Section */
-    .map-section {
-      margin-top: 100px;
+    .card {
+      background: white;
+      padding: 45px 30px;
+      border-radius: 20px;
       text-align: center;
-      padding: 60px 20px;
-      background: var(--light);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
     }
-    .map-section h2 {
+    .card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 25px 60px rgba(212,124,23,0.2);
+    }
+    .card i {
+      font-size: 4rem;
       color: var(--orange);
-      margin-bottom: 30px;
-      font-size: 2.4rem;
+      margin-bottom: 25px;
     }
-    .map-container {
-      width: 100%;
-      height: 500px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    .card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+      color: var(--black);
     }
 
     footer {
       background: var(--black);
-      color: var(--grey);
+      color: #aaa;
       text-align: center;
-      padding: 50px 20px;
-      margin-top: 0;
+      padding: 60px 20px;
+      margin-top: 120px;
+      font-size: 1rem;
     }
 
-    /* Perfect Responsiveness */
+    /* RESPONSIVE FIXES */
+    @media (max-width: 1200px) {
+      .cards { grid-template-columns: repeat(2, 1fr); }  /* 2×2 on laptops */
+    }
     @media (max-width: 768px) {
-      .container { 
-        grid-template-columns: 1fr; 
-        gap: 60px; 
-        padding: 60px 20px 0;
-      }
-      .hero h1 { font-size: 2.8rem; }
-      .hero { padding: 100px 20px; }
-      .map-container { height: 400px; }
+      .story-row, .vision-scope-section { grid-template-columns: 1fr; gap: 50px; }
+      .cards { grid-template-columns: 1fr; }  /* 1 column on tablets/phones */
+      .hero h1 { font-size: 3rem; }
+      .section-title { font-size: 2.4rem; }
     }
     @media (max-width: 480px) {
-      .hero h1 { font-size: 2.5rem; }
-      .contact-info h2, .contact-form h2 { font-size: 2rem; }
+      .hero { padding: 100px 15px; }
+      .hero h1 { font-size: 2.6rem; }
+      .vision-scope-section { padding: 60px 20px; }
     }
   </style>
 </head>
 <body>
 
   <!-- Hero -->
-  <div class="hero">
-    <h1>Contact Us</h1>
-    <p>We’re here to help – reach out any time</p>
-  </div>
+  <header class="hero">
+    <h1>About Apex Hardware</h1>
+    
+  </header>
 
   <div class="container">
 
-    <!-- Contact Info -->
-    <div class="contact-info">
-      <h2>Get in Touch</h2>
-      <div class="info-item">
-        <i class="fas fa-envelope"></i>
-        <div>
-          <strong>Email</strong><br>
-          support@apexhardware.co.uk
-        </div>
+    <!-- Our Story -->
+    <h2 class="section-title">Our Story</h2>
+    <div class="story-row">
+      <div class="story-text">
+        <h2>Welcome to Apex Hardware Supply & Tools</h2>
+        <p>Apex was created to make life easier for anyone who loves to build, fix, or create. We know how frustrating it is to waste time driving between stores or waiting weeks for the right tool.</p>
+        <p>That’s why we bring professional-quality tools, materials and hardware straight to your door — fast, affordable, and reliable.</p>
+        <p>From weekend DIY projects to full-scale professional jobs, we’ve got everything you need in one place.</p>
       </div>
-      <div class="info-item">
-        <i class="fas fa-phone"></i>
-        <div>
-          <strong>Phone</strong><br>
-          0121 204 5555<br>
-          Mon–Fri 8am–6pm | Sat 9am–2pm
-        </div>
+      <img src="C:\Users\Mohammed Hozaifa\OneDrive\Desktop\CS2\Team Project\web pages\hardware.jpeg" alt="Apex Workshop">
+    </div>
+
+    <!-- Vision Quote -->
+    <div class="vision">
+      “Everything you need to turn ideas into reality.”
+    </div>
+
+    <div class="vision-scope-section">
+      <div class="vision-box">
+        <h3>Vision & Scope</h3>
+        <p><strong>Vision:</strong> To become the UK’s most trusted online supplier for builders, makers and creators.</p>
+        <p style="margin-top:20px;"><strong>Scope:</strong> Supplying high-quality general tools, power tools, gardening equipment, building materials and electronic components to home DIY enthusiasts, professional tradespeople and small businesses.</p>
       </div>
-      <div class="info-item">
-        <i class="fas fa-map-marker-alt"></i>
-        <div>
-          <strong>Showroom & Warehouse</strong><br>
-          Unit 12, Birmingham Trade Park<br>
-          Aston, Birmingham B6 7EU<br>
-          United Kingdom
-        </div>
+      <div class="audience-box">
+        <h3>We Serve</h3>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> Home DIY Enthusiasts & Weekend Warriors</li>
+          <li><i class="fas fa-check-circle"></i> Professional Tradespeople</li>
+          <li><i class="fas fa-check-circle"></i> Small Construction & Landscaping Businesses</li>
+          <li><i class="fas fa-check-circle"></i> Makers, Hobbyists & Electronics Enthusiasts</li>
+          <li><i class="fas fa-check-circle"></i> Schools, Colleges & Workshop Clubs</li>
+        </ul>
       </div>
     </div>
 
-    <!-- Contact Form - EXACTLY WHAT YOU ASKED FOR -->
-    <div class="contact-form">
-      <h2>Send us a Message</h2>
-      <form action="https://formspree.io/f/your-form-id" method="POST">
-        <input type="text" name="full_name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="text" name="address" placeholder="Address" required>
-        <input type="text" name="subject" placeholder="Subject" required>
-        <textarea name="message" placeholder="Message" required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
+    <!-- Why Choose Apex – Now perfectly in one row on laptop -->
+    <h2 class="section-title">Why Choose Apex?</h2>
+    <div class="cards">
+      <div class="card">
+        <i class="fas fa-tools"></i>
+        <h3>Professional Quality</h3>
+        <p>Tools trusted by real tradespeople every day</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-truck-fast"></i>
+        <h3>Fast Delivery</h3>
+        <p>Next-day delivery on most items</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Best Price Guarantee</h3>
+        <p>Find it cheaper elsewhere? We’ll match it</p>
+      </div>
+      <div class="card">
+        <i class="fas fa-headset"></i>
+        <h3>Expert Support</h3>
+        <p>Talk to real humans who understand tools</p>
+      </div>
     </div>
 
-  </div>
-
-  <!-- Map -->
-  <div class="map-section">
-    <h2>Visit Our Showroom</h2>
-    <div class="map-container">
-      <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2429.4!2d-1.8828!3d52.5030!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4870bc8f0d8e6acd%3A0x4e3e4e4e4e4e4e4e!2sAston%2C%20Birmingham!5e0!3m2!1sen!2suk!4v1734028800000"
-        width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy">
-      </iframe>
-    </div>
   </div>
 
   
-
 </body>
 </html>
