@@ -1,5 +1,5 @@
 <?php
-    include("../resources/views/header.html");
+    include("resources/views/header.html");
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +12,7 @@
         <title>Index</title>
 
         <!-- Resources -->
-        <link rel="stylesheet" href="../resources/css/Main.css">
+        <link rel="stylesheet" href="resources/css/Main.css">
          
     </head>
     <body>
