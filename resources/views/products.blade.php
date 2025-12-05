@@ -1,20 +1,17 @@
-<?php
-    include("header.html");
-?>
-
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Short description of page">
-
+        <title>Products Page</title>
         <!-- Resources -->
-        <link rel="stylesheet" href="../css/Main.css">
+        <link rel="stylesheet" href="{{ asset('css/Main.css') }}">
     </head>
     <body>
+        <x-header />
         <h1>products page</h1>
-        <form action="" method="post">
+        <form action="{{ route('products.index') }}" method="get">
                 <label>Category: </label>
                 <select name="cuisine">
                     <option value="">All</option>
