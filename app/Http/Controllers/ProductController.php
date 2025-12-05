@@ -10,7 +10,7 @@ class ProductController extends Controller
     // Controller to handle logic with product interaction
     public function index() {
         $products = Product::all();
-        return view('product.index', ['products' => $products]);
+        return view('products.index', ['products' => $products]);
     }
 
     public function show($id) {

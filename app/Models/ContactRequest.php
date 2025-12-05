@@ -24,7 +24,7 @@ class ContactRequest extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->nullable();
+        return $this->belongsTo(User::class);
     }
 
 }
