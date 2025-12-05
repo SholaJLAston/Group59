@@ -8,7 +8,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::view('/about', 'about')->name('about');
 Route::get('/contact', [ContactController::class, 'create'])->name('contact.create');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
