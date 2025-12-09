@@ -24,7 +24,7 @@
                 <p>Account Log In</p>
             </a>
         @else
-            <a href="{{ route('basket.index') }}" class="indexLink">
+            <a href="{{ route('home') }}" class="indexLink">
                 <p>Basket</p>
             </a>
             <a href="{{ route('logout') }}" class="indexLink" 
