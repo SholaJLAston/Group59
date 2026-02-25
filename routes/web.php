@@ -8,7 +8,7 @@ use App\Http\Controllers\ProductController;
 // Public pages (no auth required)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products', [ProductController::class])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 // Unified Account page (login + register in one page – your custom design)

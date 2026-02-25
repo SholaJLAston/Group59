@@ -10,14 +10,14 @@
     <ul class="main-links">
         <li><a href="{{ route('home') }}" class="{{ Route::currentRouteName() === 'home' ? 'active' : '' }}">Home</a></li>
         <li><a href="{{ route('about') }}">About Us</a></li>
-        <li><a href="{{ route('shop') }}">Shop</a></li>
+        <li><a href="{{ route('products') }}">Shop</a></li>
         <li><a href="{{ route('contact') }}">Contact</a></li>
     </ul>
 
    <div class="right-icons">
   <!-- Cart icon -->
   <div class="cart-wrapper relative">  <!-- added 'relative' class here for safety -->
-    <a href="{{ route('cart') }}" title="Basket">
+    <a href="{{ route('basket') }}" title="Basket">
       <i class="fas fa-shopping-cart nav-icon"></i>
       <span class="cart-count">0</span>
     </a>
