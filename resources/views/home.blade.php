@@ -19,7 +19,7 @@
     <div class="hero-content">
       <h1>Everything You Need to Turn Ideas into Reality</h1>
       <p class="hero-subtitle">Professional-grade tools, materials, power equipment & hardware — delivered fast for DIYers, tradespeople & small businesses.</p>
-      <a href="{{ route('shop') }}" class="btn-shop-now">
+      <a href="{{ route('products') }}" class="btn-shop-now">
         <i class="fas fa-shopping-bag"></i> SHOP NOW
       </a>
     </div>
@@ -30,28 +30,28 @@
     <div class="container">
       <h2 class="section-title">Browse Our Categories</h2>
       <div class="categories-grid">
-        <a href="{{ route('shop') }}?category=general-tools" class="category-card">
+        <a href="{{ route('products') }}?category=general-tools" class="category-card">
           <img src="{{ asset('images/General Tools.avif') }}" alt="General Tools">
           <h3>General Tools</h3>
           <p>Screwdrivers, hammers, pliers & more</p>
         </a>
-        <a href="{{ route('shop') }}?category=electronic-hardware" class="category-card">
+        <a href="{{ route('products') }}?category=electronic-hardware" class="category-card">
           <img src="{{ asset('images/Electronic Hardware.avif') }}" alt="Electronic Hardware">
           <h3>Electronic Hardware</h3>
           <p>Resistors, circuits, LEDs & components</p>
         </a>
-        <a href="{{ route('shop') }}?category=electronic-tools" class="category-card">
+        <a href="{{ route('products') }}?category=electronic-tools" class="category-card">
           <img src="{{ asset('images/Electronic tools.avif') }}" alt="Electronic Tools">
           <h3>Electronic Tools</h3>
           <p>Drills, wire strippers, soldering irons</p>
         </a>
 
-        <a href="{{ route('shop') }}?category=gardening-tools" class="category-card">
+        <a href="{{ route('products') }}?category=gardening-tools" class="category-card">
           <img src="{{ asset('images/Gardening Tools.avif') }}" alt="Gardening Tools">
           <h3>Gardening Tools</h3>
           <p>Shovels, rakes, shears & lawnmowers</p>
         </a>
-        <a href="{{ route('shop') }}?category=materials" class="category-card">
+        <a href="{{ route('products') }}?category=materials" class="category-card">
           <img src="{{ asset('images/Materials.avif') }}" alt="Materials">
           <h3>Materials</h3>
           <p>Wood, concrete, soil, metal & more</p>
@@ -148,7 +148,7 @@
 
             <div class="cta-buttons">
               <a href="{{ route('contact') }}" class="btn-outline">Contact Us</a>
-              <a href="{{ route('shop') }}" class="btn-primary">
+              <a href="{{ route('products') }}" class="btn-primary">
                 <i class="fas fa-shopping-bag"></i> Shop Now
               </a>
             </div>
