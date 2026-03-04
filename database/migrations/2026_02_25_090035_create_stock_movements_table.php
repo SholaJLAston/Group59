@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('type', ['in', 'out']);
             $table->integer('quantity');
             $table->string('reference')->nullable()->comment('Reference for the stock movement, e.g., order ID, return ID');
-            $table->integer('quantity')
             $table->timestamps();
             
         });
