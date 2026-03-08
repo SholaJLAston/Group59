@@ -15,7 +15,16 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string',
         ]);
-        $product->reviews()->create($validated);
+        try {
+            ProductReview::create([
+                'product_id' => $product->id,
+                'user_id' => $request->user()->id,
+                'rating' => $validated['rating'],
+                'comment' => $validated['comment'] ?? null,
+            ]);
+        } catch (\Exception $e) {
+            return back()->with("error", "Failed to submit review: " . $e->getMessage());
+        }
         return back()->with("success", "Review submitted successfully!");
     }
 
