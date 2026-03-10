@@ -14,7 +14,7 @@ class BasketController extends Controller
     public function index()
     {
         // 
-        $basket = Auth::user()->basket->with('basketItems.product')->first();
+        $basket = Auth::user()->basket()->with('basketItems.product')->first();
 
         $basketItems = $basket ? $basket->basketItems : collect();
 
@@ -33,7 +33,7 @@ class BasketController extends Controller
     }
     //
     public function add(Product $product) {
-        $basket = Auth::user()->basket->firstOrCreate(['user_id' => Auth::id()]);
+        $basket = Auth::user()->basket()->firstOrCreate(['user_id' => Auth::id()]);
 
         $basketItem = $basket->basketItems()->where('product_id', $product->id)->first();
 
@@ -46,22 +46,24 @@ class BasketController extends Controller
             ]);
         }
 
-        return back()->with('Product added to basket successfully.');
+        return back()->with('success', 'Product added to basket successfully.');
     }
 
     public function remove(BasketItem $basketItem) {
     
         $basketItem->delete();
 
-        return back()->with('Product removed from basket successfully.');
+        return back()->with('success','Product removed from basket successfully.');
     }
 
     public function update(BasketItem $basketItem, Request $request) {
-        $validated = $request->validated(['quantity'=> 'required|integer|min:1']);
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
 
         $basketItem->update(['quantity' => $validated['quantity']]);
 
-        return back()->with('Product updated successfully.');
+        return back()->with('success', 'Product updated successfully.');
     }
 
     public function store(Request $request)
@@ -78,6 +80,6 @@ class BasketController extends Controller
             $basket->basketItems()->delete();
         }
 
-        return back()->with('Basket cleared successfully.');
+        return back()->with('success', 'Basket cleared successfully.');
     }
 }
