@@ -37,5 +37,29 @@ class Product extends Model{
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
 
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    /**
+     * Get the stock status based on current stock quantity
+     */
+    public function getStockStatusAttribute(): string
+    {
+        return $this->stock_quantity <= 0 ? 'Out of Stock' : 'In Stock';
+    }
+
+    /**
+     * Get the stock level
+     */
+    public function getStockLevelAttribute(): int
+    {
+        return $this->stock_quantity;
+    }
 }

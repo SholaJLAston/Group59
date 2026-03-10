@@ -6,7 +6,8 @@
   <style>
     /* Hero */
     .hero {
-      background: var(--black);
+      background: linear-gradient(rgba(7,7,7,0.65), rgba(7,7,7,0.65)),
+                  url('{{ asset('images/hardware.avif') }}') center/cover; 
       color: white;
       text-align: center;
       padding: 120px 20px;
@@ -23,73 +24,145 @@
       opacity: 0.9; 
     }
 
-    .container {
-      max-width: 1100px;
+    .contact-container {
+      max-width: 1200px;
       margin: 0 auto;
       padding: 80px 20px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
+      grid-template-columns: 1fr 1.8fr;
+      gap: 60px;
+      align-items: start;
     }
 
     /* Contact Info */
-    .contact-info h2, .contact-form h2 {
-      color: var(--orange);
-      margin-bottom: 30px;
-      font-size: 2.2rem;
+    .contact-info h2 {
+      color: var(--black);
+      margin-bottom: 40px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .contact-form h2 {
+      color: var(--black);
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 25px;
     }
 
     .info-item {
       display: flex;
       gap: 15px;
-      margin-bottom: 25px;
+      margin-bottom: 35px;
       align-items: flex-start;
     }
 
     .info-item i {
-      color: var(--orange);
-      font-size: 1.4rem;
-      margin-top: 4px;
+      background: var(--orange);
+      color: white;
+      font-size: 1.3rem;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      margin-top: 0;
+    }
+
+    .info-item div {
+      flex: 1;
+    }
+
+    .info-item strong {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--black);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .info-item p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .contact-form {
+      padding: 40px;
+      background: #f5f5f5;
+      border-radius: 4px;
     }
 
     /* Form */
     form {
       display: grid;
       gap: 20px;
+      background: transparent;
+      padding: 0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
     input, textarea {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
+      padding: 16px 18px;
+      border: none;
+      border-radius: 4px;
       font-size: 1rem;
+      background: white;
+      color: #333;
+      font-family: inherit;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #999;
     }
 
     input:focus, textarea:focus {
       outline: none;
-      border-color: var(--orange);
+      background: #fafafa;
+      box-shadow: 0 0 0 2px rgba(212, 124, 23, 0.1);
     }
 
     textarea { 
       min-height: 140px;
       resize: vertical;
+      grid-column: 1 / -1;
     }
 
     button {
       background: var(--orange);
       color: white;
-      padding: 16px;
+      padding: 16px 40px;
       border: none;
-      border-radius: 8px;
-      font-size: 1.1rem;
+      border-radius: 4px;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
       margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      transition: background 0.3s ease;
     }
 
     button:hover { 
       background: #b86b12; 
+    }
+
+    button i {
+      font-size: 1.1rem;
     }
 
     /* Map Section */
@@ -128,12 +201,46 @@
 
     @media (max-width: 480px) {
       .hero h1 { font-size: 2.5rem; }
-      .contact-info h2, .contact-form h2 { font-size: 2rem; }
+      .contact-info h2, .contact-form h2 { font-size: 1.2rem; }
+    }
+
+    /* Success message styling */
+    .success-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #d1fae5;
+      border-left: 4px solid #10b981;
+      color: #065f46;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+      opacity: 1;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
   </style>
 @endsection
 
 @section('content')
+
+  <!-- Success Message -->
+  @if(session('success'))
+    <div class="success-message">
+      {{ session('success') }}
+    </div>
+  @endif
 
   <!-- Hero -->
   <div class="hero">
@@ -141,47 +248,61 @@
     <p>We’re here to help – reach out any time</p>
   </div>
 
-  <div class="container">
+  <div class="contact-container">
 
     <!-- Contact Info -->
     <div class="contact-info">
       <h2>Get in Touch</h2>
-      <div class="info-item">
-        <i class="fas fa-envelope"></i>
-        <div>
-          <strong>Email</strong><br>
-          support@apexhardware.co.uk
-        </div>
-      </div>
-      <div class="info-item">
-        <i class="fas fa-phone"></i>
-        <div>
-          <strong>Phone</strong><br>
-          0121 204 5555<br>
-          Mon–Fri 8am–6pm | Sat 9am–2pm
-        </div>
-      </div>
+      
       <div class="info-item">
         <i class="fas fa-map-marker-alt"></i>
         <div>
-          <strong>Showroom & Warehouse</strong><br>
-          Unit 12, Birmingham Trade Park<br>
-          Aston, Birmingham B6 7EU<br>
-          United Kingdom
+          <strong>Address</strong>
+          Unit 12, Birmingham Trade Park, Aston, Birmingham B6 7EU
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fas fa-phone"></i>
+        <div>
+          <strong>Phone</strong>
+          +1 (555) 123-4567<br>
+          +1 (555) 987-6543
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fas fa-envelope"></i>
+        <div>
+          <strong>Email</strong>
+          info@apexhardware.com<br>
+          support@apexhardware.com
+        </div>
+      </div>
+
+      <div class="info-item">
+        <i class="fas fa-clock"></i>
+        <div>
+          <strong>Business Hours</strong>
+          Monday - Friday: 7:00 AM - 6:00 PM<br>
+          Saturday: 8:00 AM - 4:00 PM<br>
+          Sunday: Closed
         </div>
       </div>
     </div>
 
     <!-- Contact Form -->
     <div class="contact-form">
-      <h2>Send us a Message</h2>
-      <form action="https://formspree.io/f/your-form-id" method="POST">
-        <input type="text" name="full_name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="text" name="address" placeholder="Address" required>
+      <form action="{{ route('contact.store') }}" method="POST">
+        @csrf
+        <h2>Send us a Message</h2>
+        <div class="form-row">
+          <input type="text" name="name" placeholder="Your Name" required>
+          <input type="email" name="email" placeholder="Email Address" required>
+        </div>
         <input type="text" name="subject" placeholder="Subject" required>
-        <textarea name="message" placeholder="Message" required></textarea>
-        <button type="submit">Send Message</button>
+        <textarea name="message" placeholder="Tell us more about your inquiry..." required></textarea>
+        <button type="submit"><i class="fas fa-paper-plane"></i> SEND MESSAGE</button>
       </form>
     </div>
 
@@ -198,4 +319,21 @@
     </div>
   </div>
 
+@endsection
+
+@section('scripts')
+<script>
+  // Auto-hide success message after 5 seconds
+  document.addEventListener('DOMContentLoaded', function() {
+    const successMessage = document.querySelector('.success-message');
+    if (successMessage) {
+      setTimeout(function() {
+        successMessage.style.opacity = '0';
+        setTimeout(function() {
+          successMessage.style.display = 'none';
+        }, 300);
+      }, 5000);
+    }
+  });
+</script>
 @endsection

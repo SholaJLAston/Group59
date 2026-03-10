@@ -45,4 +45,18 @@ class BasketController extends Controller
         return back()->with('Product updated successfully.');
     }
 
+    public function index()
+    {
+        // 
+    }
+
+    public function store(Request $request)
+    {
+        // 
+    }
+
+    public function clear()
+    {
+        // 
+    }
 }

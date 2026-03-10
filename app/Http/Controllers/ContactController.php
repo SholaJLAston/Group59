@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ContactRequest;
 
 class ContactController extends Controller
 {
@@ -15,14 +16,14 @@ public function create()
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'full_name' => 'required|string|max:255',
+        'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
         'subject' => 'required|string|max:255',
         'message' => 'required|string',
     ]);
 
     ContactRequest::create([
-        'name' => $validated['full_name'],
+        'name' => $validated['name'],
         'email' => $validated['email'],
         'subject' => $validated['subject'],
         'message' => $validated['message'],
@@ -30,7 +31,7 @@ public function store(Request $request)
         'user_id' => auth()->id(),
     ]);
 
-    return redirect()->route('contact.create')->with('success', 'Message sent successfully!');
+    return redirect()->route('contact')->with('success', 'Message sent successfully we will reach you shortly');
 }
 
 }

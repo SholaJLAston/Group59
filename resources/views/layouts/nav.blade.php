@@ -1,9 +1,9 @@
 <nav class="navbar">
     <div class="logo">
         <img src="{{ asset('images/logo.png') }}" alt="Apex Logo" class="logo-img">
-        <div>
-            APEX
-            <span class="tagline">HARDWARE SUPPLY & TOOLS</span>
+        <div class="logo-text">
+            <div class="logo-brand">APEX</div>
+            <div class="logo-tagline">HARDWARE SUPPLY & TOOLS</div>
         </div>
     </div>
 
@@ -27,22 +27,29 @@
 <div class="account-dropdown ml-6 relative">
   @auth
     <!-- Logged in user -->
-    <button class="account-btn" onclick="this.parentElement.classList.toggle('active')">
-      {{ Auth::user()->name }}
+    <button class="account-btn flex items-center gap-3" onclick="event.stopPropagation(); this.parentElement.classList.toggle('active')">
+      <div class="profile-avatar">{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) }}</div>
+      <span class="account-name">{{ Auth::user()->first_name ?? Auth::user()->name }}</span>
       <i class="fas fa-chevron-down text-sm"></i>
     </button>
 
     <div class="account-dropdown-content">
-      <a href="{{ route('profile.edit') }}">Profile</a>
-      <a href="{{ route('dashboard') }}">Dashboard</a>
-      <form method="POST" action="{{ route('logout') }}">
+      <div class="account-header">
+        <div class="account-header-name">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</div>
+        <div class="account-header-email">{{ Auth::user()->email }}</div>
+      </div>
+      <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
+      <a href="{{ route('profile.edit') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+      <a href="{{ route('dashboard') }}"><i class="fas fa-cog"></i> Settings</a>
+      <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
+      <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
         @csrf
-        <button type="submit">Logout</button>
+        <button type="submit" style="color: #dc2626;"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </form>
     </div>
   @else
     <!-- Guest -->
-    <button class="account-btn" onclick="this.parentElement.classList.toggle('active')">
+    <button class="account-btn" onclick="event.stopPropagation(); this.parentElement.classList.toggle('active')">
       Account
       <i class="fas fa-chevron-down text-sm"></i>
     </button>

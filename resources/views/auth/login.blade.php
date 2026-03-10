@@ -4,13 +4,14 @@
 
 @section('extra-css')
   <style>
-    /* Your full account design CSS – exactly as you provided */
     body {
       background: #ffffff;
       color: #070707;
       min-height: 100vh;
+      margin: 0;
       display: flex;
       flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     main {
@@ -21,245 +22,230 @@
       padding: 40px 20px;
     }
 
-    .container {
-      width: 90%;
-      max-width: 1150px;
-      display: flex;
-      gap: 60px;
-      flex-wrap: wrap;
-      justify-content: center;
+    .login-wrapper {
+      width: 100%;
+      max-width: 460px;          /* ← increased width here */
+      text-align: center;
     }
 
-    .left-side {
-      flex: 1;
-      min-width: 340px;
+    .header-text {
+      margin-bottom: 36px;
     }
 
-    .left-side h1 {
-      font-size: 3rem;
+    .header-text h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
       color: #D47C17;
-      margin-bottom: 15px;
+      margin: 0 0 10px 0;
     }
 
-    .left-side p {
-      color: #707070;
-      font-size: 1.1rem;
-      max-width: 420px;
-      line-height: 1.7;
-    }
-
-    .image-grid {
-      margin-top: 40px;
-      display: grid;
-      grid-template-columns: repeat(2, 180px);
-      grid-auto-rows: auto;
-      gap: 20px;
-    }
-
-    .image-grid img {
-      width: 180px;
-      height: 240px;
-      border-radius: 20px;
-      object-fit: cover;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-
-    .image-grid img:nth-child(1) { grid-column: 1; }
-    .image-grid img:nth-child(2) { grid-column: 2; }
-    .image-grid img:nth-child(3) { grid-column: 1 / span 2; justify-self: center; }
-
-    .right-side {
-      flex: 1;
-      min-width: 380px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .header-text p {
+      font-size: 1.08rem;
+      color: #555;
+      margin: 0;
     }
 
     .form-card {
-      width: 100%;
-      max-width: 420px;
-      background: #f3f3f3;
-      padding: 40px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    .form-title {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #D47C17;
-      text-align: center;
-    }
-
-    .role-select {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .role-select label {
-      margin: 0 20px;
-      font-weight: 500;
-      color: #444;
+      background: #f8f9fa;
+      padding: 44px 36px;
+      border-radius: 20px;
+      border: 1px solid #e5e7eb;     /* ← subtle light border instead of shadow */
+      /* box-shadow removed */
     }
 
     .field {
       position: relative;
-      margin-bottom: 15px;
+      margin-bottom: 22px;
     }
 
     .field input {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+      padding: 15px 18px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 1.02rem;
+      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .field span {
+    .field input:focus {
+      outline: none;
+      border-color: #D47C17;
+      box-shadow: 0 0 0 3px rgba(212, 124, 23, 0.09);
+    }
+
+    .field .toggle-password {
       position: absolute;
-      right: 15px;
+      right: 18px;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
-      color: #707070;
-      font-size: 1.2rem;
+      width: 22px;
+      height: 22px;
+      color: #6b7280;
     }
 
     .forgot {
       display: block;
       text-align: right;
       color: #D47C17;
-      font-size: 0.95rem;
-      margin-bottom: 20px;
+      font-size: 0.97rem;
+      margin: -6px 0 26px 0;
       text-decoration: none;
     }
 
-    .forgot:hover { text-decoration: underline; }
+    .forgot:hover {
+      text-decoration: underline;
+    }
 
-    button[type="submit"] {
+    .submit-btn {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: #D47C17;
       color: white;
       border: none;
-      border-radius: 10px;
-      font-size: 1.1rem;
+      border-radius: 12px;
+      font-size: 1.08rem;
+      font-weight: 600;
       cursor: pointer;
-      margin: 20px 0;
+      transition: background 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #b96d12;
     }
 
     .divider {
-      text-align: center;
-      margin: 20px 0;
-      color: #707070;
+      margin: 32px 0;
+      color: #6b7280;
+      font-size: 0.97rem;
+      position: relative;
     }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: #d1d5db;
+    }
+
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
 
     .social-btn {
       width: 100%;
-      padding: 13px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
       background: white;
-      font-size: 1rem;
+      font-size: 1.02rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.2s;
     }
 
-    .social-btn:hover { background: #ffe8d0; }
-
-    .link {
-      text-align: center;
-      margin-top: 18px;
+    .social-btn:hover {
+      background: #fff8f0;
+      border-color: #D47C17;
     }
 
-    .link a {
+    .social-btn.google svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .bottom-link {
+      margin-top: 28px;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .bottom-link a {
       color: #D47C17;
       font-weight: 600;
-      cursor: pointer;
       text-decoration: none;
+    }
+
+    .bottom-link a:hover {
+      text-decoration: underline;
     }
 
     .error-message {
       color: #dc2626;
-      font-size: 0.9rem;
-      margin-top: 4px;
+      font-size: 0.92rem;
+      margin-top: 6px;
+      text-align: left;
+      padding-left: 6px;
     }
 
-    @media (max-width: 900px) {
-      .container { flex-direction: column; gap: 60px; }
-      .image-grid { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
-      .image-grid img { width: 100%; height: auto; }
-    }
-
-    @media (max-width: 600px) {
-      .image-grid { grid-template-columns: 1fr; }
+    @media (max-width: 520px) {
+      .login-wrapper { max-width: 100%; }
+      .form-card { padding: 36px 28px; }
+      .header-text h1 { font-size: 2.2rem; }
     }
   </style>
 @endsection
 
 @section('content')
   <main>
-    <div class="container">
+    <div class="login-wrapper">
 
-      <!-- LEFT SIDE – Images & Text -->
-      <div class="left-side">
-        <h1>Let’s Connect</h1>
-        <p>
-          Sign in or create an account to access Apex Hardware services, manage orders,
-          and explore professional tools built for both customers and administrators.
-        </p>
-
-        <div class="image-grid">
-          <img src="{{ asset('images/Professional.avif') }}" alt="Professional">
-          <img src="{{ asset('images/Store.avif') }}" alt="Store">
-          <img src="{{ asset('images/Tools.avif') }}" alt="Tools">
-        </div>
+      <div class="header-text">
+        <h1>WELCOME BACK</h1>
+        <p>Sign in to your account to continue</p>
       </div>
 
-      <!-- RIGHT SIDE – Login Form -->
-      <div class="right-side">
-        <div class="form-card">
-          <form method="POST" action="{{ route('login') }}">
-            @csrf
+      <div class="form-card">
+        <form method="POST" action="{{ route('login') }}">
+          @csrf
 
-            <div class="form-title">Sign In</div>
+          <div class="field">
+            <input type="email" name="email" placeholder="Email Address" value="{{ old('email') }}" required autofocus>
+          </div>
+          @error('email')
+            <div class="error-message">{{ $message }}</div>
+          @enderror
 
-            <div class="role-select">
-              <label><input type="radio" name="role" value="customer" checked> Customer</label>
-              <label><input type="radio" name="role" value="admin"> Admin</label>
-            </div>
+          <div class="field">
+            <input type="password" name="password" id="password" placeholder="Password" required>
+            <svg class="toggle-password" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="togglePassword()">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          @error('password')
+            <div class="error-message">{{ $message }}</div>
+          @enderror
 
-            <div class="field">
-              <input type="email" name="email" placeholder="Email Address" value="{{ old('email') }}" required autofocus>
-            </div>
-            @error('email')
-              <div class="error-message">{{ $message }}</div>
-            @enderror
+          <a href="{{ route('password.request') }}" class="forgot">Forgotten Password?</a>
 
-            <div class="field">
-              <input type="password" name="password" placeholder="Password" required>
-              <span class="toggle-password">👁</span>
-            </div>
-            @error('password')
-              <div class="error-message">{{ $message }}</div>
-            @enderror
+          <button type="submit" class="submit-btn">SIGN IN</button>
 
-            <a href="{{ route('password.request') }}" class="forgot">Forgotten Password?</a>
+          <div class="divider">Or</div>
 
-            <button type="submit">Sign In</button>
+          <button type="button" class="social-btn google">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+            </svg>
+            Sign in with Google
+          </button>
 
-            <div class="divider">OR</div>
+          <div class="bottom-link">
+            Don’t have an account? <a href="{{ route('register') }}">Sign Up</a>
+          </div>
 
-            <button type="button" class="social-btn">Continue with Google</button>
-            <button type="button" class="social-btn">Continue with Facebook</button>
-
-            <div class="link">
-              Don’t have an account? <a href="{{ route('register') }}">Sign Up</a>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
 
     </div>
@@ -268,18 +254,25 @@
 
 @section('extra-js')
   <script>
-    // Password visibility toggle
-    document.querySelectorAll('.toggle-password').forEach(function(toggle) {
-      toggle.addEventListener('click', function() {
-        const input = this.previousElementSibling;
-        if (input.type === 'password') {
-          input.type = 'text';
-          this.textContent = '🙈';
-        } else {
-          input.type = 'password';
-          this.textContent = '👁';
-        }
-      });
-    });
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.querySelector('.toggle-password');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      }
+    }
   </script>
 @endsection

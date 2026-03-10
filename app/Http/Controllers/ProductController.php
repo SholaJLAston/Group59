@@ -33,14 +33,21 @@ class ProductController extends Controller
         $products = $query->get();
         $categories = \App\Models\Category::all();
 
+        // forward any filter form values so the UI can initialize
         return view('products', compact('products', 'categories'))
-            ->with(['search' => $request->search ?? '', 'selectedCategory' => $request->category ?? 'all']);
+            ->with([
+                'search' => $request->search ?? '',
+                'selectedCategory' => $request->category ?? 'all',
+                'minPrice' => $request->minPrice ?? '',
+                'maxPrice' => $request->maxPrice ?? '',
+                'inStockOnly' => $request->inStockOnly ?? false,
+            ]);
     }
 
     public function show(Product $product)
     {
-        // make sure category is available
-        $product->load('category');
+        // make sure category is available and eager load any reviews with reviewer
+        $product->load(['category', 'reviews.user']);
         return view('productdetails', compact('product'));
     }
 }

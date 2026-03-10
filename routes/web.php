@@ -8,7 +8,7 @@ use App\Http\Controllers\ProductController;
 // Public pages (no auth required)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
-Route::get('/products', [ProductController::class])->name('products');
+Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 // Unified Account page (login + register in one page – your custom design)
@@ -36,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // product reviews
+    Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])
+        ->name('reviews.store');
 });
 
 require __DIR__.'/auth.php';
