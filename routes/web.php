@@ -27,6 +27,9 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/basket', [BasketController::class, 'index'])->name('basket.index');
     Route::post('/basket/products/{product}', [BasketController::class, 'add'])->name('basket.add');
+    Route::patch('/basket/items/{basketItem}', [BasketController::class, 'update'])->name('basket.update');
+    Route::delete('/basket/items/{basketItem}', [BasketController::class, 'remove'])->name('basket.remove');
+    Route::delete('/basket', [BasketController::class, 'clear'])->name('basket.clear');
 });
 
 require __DIR__.'/auth.php';
