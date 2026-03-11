@@ -19,12 +19,16 @@ class ReviewController extends Controller
         $validated['product_id'] = $product->id;
 
         // ensure a user can only leave one review per product
-        ProductReview::updateOrCreate(
+        $review = ProductReview::updateOrCreate(
             ['product_id' => $product->id, 'user_id' => $validated['user_id']],
             ['rating' => $validated['rating'], 'comment' => $validated['comment']]
         );
 
-        return back()->with('status', 'Your review has been saved.');
+        $message = $review->wasRecentlyCreated
+            ? 'Your review has been submitted.'
+            : 'Your review has been updated.';
+
+        return back()->with('status', $message);
     }
 
     public function update(Request $request, ProductReview $review)

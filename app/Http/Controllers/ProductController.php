@@ -30,6 +30,18 @@ class ProductController extends Controller
             });
         }
 
+        if ($request->filled('minPrice') && is_numeric($request->minPrice)) {
+            $query->where('price', '>=', (float) $request->minPrice);
+        }
+
+        if ($request->filled('maxPrice') && is_numeric($request->maxPrice)) {
+            $query->where('price', '<=', (float) $request->maxPrice);
+        }
+
+        if ($request->boolean('inStockOnly')) {
+            $query->where('stock_quantity', '>', 0);
+        }
+
         $products = $query->get();
         $categories = \App\Models\Category::all();
 
