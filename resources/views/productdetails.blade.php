@@ -25,8 +25,8 @@
         </div>
 
         <div class="product-info">
-          <!-- Stock Badge at TOP -->
-          <span class="stock-badge 
+          <!-- Stock Badge -->
+          <span class="stock-badge
             {{ Str::contains(strtolower($product->stock_status ?? ''), 'out') ? 'out-of-stock' : 'in-stock' }}">
             {{ $product->stock_status ?? 'In Stock' }}
           </span>
@@ -37,7 +37,7 @@
           <!-- Category -->
           <p class="category">Category: {{ $product->category->name ?? 'Uncategorized' }}</p>
 
-          <!-- Rating Section with Stars -->
+          <!-- Rating -->
           <div class="rating">
             @php
               $count = $product->reviews->count();
@@ -57,7 +57,7 @@
           <!-- Description -->
           <p class="description">{{ $product->description ?? '' }}</p>
 
-          <!-- Quantity & Add to Cart in ONE ROW -->
+          <!-- Quantity & Add to Cart -->
           <div class="quantity-add-section">
             <div class="quantity-group">
               <button type="button" class="qty-btn" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">−</button>
@@ -72,16 +72,16 @@
           <!-- Trust Badges -->
           <div class="trust-badges">
             <div class="badge-box">
-              <div class="badge-icon">🛫</div>
-              <div class="badge-text">Free Shipping</div>
+              <i class="fas fa-truck badge-icon"></i>
+              <span class="badge-text">Free Shipping</span>
             </div>
             <div class="badge-box">
-              <div class="badge-icon">🔒</div>
-              <div class="badge-text">Secure Payment</div>
+              <i class="fas fa-shield-alt badge-icon"></i>
+              <span class="badge-text">Secure Payment</span>
             </div>
             <div class="badge-box">
-              <div class="badge-icon">↺</div>
-              <div class="badge-text">Easy Returns</div>
+              <i class="fas fa-undo badge-icon"></i>
+              <span class="badge-text">Easy Returns</span>
             </div>
           </div>
         </div>
@@ -92,29 +92,35 @@
         <h2 class="reviews-title">Customer Reviews</h2>
 
         @auth
-        <form method="POST" action="{{ route('reviews.store', $product) }}" class="review-form">
-          @csrf
-          <div class="form-group">
-            <label class="form-label">Rating</label>
-            <div class="stars">
-              @for($i=1;$i<=5;$i++)
-                <span data-value="{{ $i }}">★</span>
-              @endfor
+        <div class="review-form">
+          
+          <form method="POST" action="{{ route('reviews.store', $product) }}" id="reviewForm">
+            @csrf
+
+            <div class="form-group">
+              <label class="form-label">Rating</label>
+              <div class="stars" id="starContainer">
+                @for($i=1;$i<=5;$i++)
+                  <span data-value="{{ $i }}">★</span>
+                @endfor
+              </div>
+              <small id="starError" style="color:#dc2626; font-size:0.85rem; margin-top:4px; display:none;">Please select a star rating.</small>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label">Your Review</label>
-            <textarea name="comment" class="review-textarea" placeholder="Share your experience with this product...">{{ old('comment') }}</textarea>
-          </div>
+            <div class="form-group">
+              <label class="form-label">Your Review</label>
+              <textarea name="comment" class="review-textarea" id="reviewComment" placeholder="Share your experience with this product...">{{ old('comment') }}</textarea>
+              <small id="commentError" style="color:#dc2626; font-size:0.85rem; margin-top:4px; display:none;">Please write a review before submitting.</small>
+            </div>
 
-          <input type="hidden" name="rating" id="ratingInput" value="{{ old('rating',1) }}">
-          <button class="submit-review-btn" type="submit">Submit Review</button>
-        </form>
+            <input type="hidden" name="rating" id="ratingInput" value="{{ old('rating', 0) }}">
+            <button class="submit-review-btn" type="submit">Submit Review</button>
+          </form>
+        </div>
         @else
-          <div class="login-review-box">
-            <p>Please <a href="{{ route('login') }}" class="login-link">log in</a> to leave a review.</p>
-          </div>
+          <p class="login-review-plain">
+            Please <a href="{{ route('login') }}" class="login-link-plain">log in</a> to leave a review.
+          </p>
         @endauth
 
         @if($product->reviews->isEmpty())
@@ -145,6 +151,7 @@
           @endforeach
         @endif
       </section>
+
     </div>
   </section>
 @endsection
@@ -156,18 +163,69 @@
     alert(`Added "${name}" (Qty: ${qty}) to cart!`);
   }
 
-  // rating stars interaction for review form
+  // Stars: hover preview + click to select
+  let selectedRating = {{ old('rating', 0) }};
+
   document.querySelectorAll('.stars span').forEach(star => {
-    star.addEventListener('click', function() {
-      const value = this.dataset.value;
+
+    star.addEventListener('mouseover', function () {
+      const val = parseInt(this.dataset.value);
       document.querySelectorAll('.stars span').forEach(s => {
-        s.classList.toggle('active', s.dataset.value <= value);
+        s.style.color = parseInt(s.dataset.value) <= val ? '#f59e0b' : '#d1d5db';
       });
-      const input = document.getElementById('ratingInput');
-      if (input) input.value = value;
+    });
+
+    star.addEventListener('mouseout', function () {
+      document.querySelectorAll('.stars span').forEach(s => {
+        s.style.color = parseInt(s.dataset.value) <= selectedRating ? '#f59e0b' : '#d1d5db';
+      });
+    });
+
+    star.addEventListener('click', function () {
+      selectedRating = parseInt(this.dataset.value);
+      document.getElementById('ratingInput').value = selectedRating;
+      document.getElementById('starError').style.display = 'none';
+      document.querySelectorAll('.stars span').forEach(s => {
+        s.style.color = parseInt(s.dataset.value) <= selectedRating ? '#f59e0b' : '#d1d5db';
+      });
     });
   });
-  // auto-hide success message
+
+  // Form validation – block submit if rating or comment is missing
+  const form = document.getElementById('reviewForm');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      let valid = true;
+
+      const rating  = parseInt(document.getElementById('ratingInput').value);
+      const comment = document.getElementById('reviewComment').value.trim();
+
+      if (rating < 1) {
+        document.getElementById('starError').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('starError').style.display = 'none';
+      }
+
+      if (comment === '') {
+        document.getElementById('commentError').style.display = 'block';
+        valid = false;
+      } else {
+        document.getElementById('commentError').style.display = 'none';
+      }
+
+      if (!valid) e.preventDefault();
+    });
+
+    // Hide comment error as user starts typing
+    document.getElementById('reviewComment').addEventListener('input', function () {
+      if (this.value.trim() !== '') {
+        document.getElementById('commentError').style.display = 'none';
+      }
+    });
+  }
+
+  // Auto-dismiss success toast after 3 seconds
   document.addEventListener('DOMContentLoaded', () => {
     const msg = document.querySelector('.success-message');
     if (msg) {
@@ -177,5 +235,6 @@
         setTimeout(() => msg.remove(), 500);
       }, 3000);
     }
-  });</script>
+  });
+</script>
 @endsection

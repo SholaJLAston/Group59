@@ -20,7 +20,7 @@ Route::get('/register', fn() => redirect()->route('account'))->name('register');
 
 // Cart / Basket page (required by brief)
 Route::get('/basket', function () {
-    return view('pages.basket');
+    return view('basket');
 })->name('basket');
 
 // Contact form routes (cleaned up – only one GET name)
@@ -29,7 +29,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 
 // Authenticated routes (dashboard, profile – you already had these)
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
