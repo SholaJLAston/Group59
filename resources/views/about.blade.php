@@ -1,265 +1,686 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>About Us | Apex Hardware Supply & Tools</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+@extends('layouts.app')
+
+@section('title', 'About Us – Apex Hardware Supply & Tools')
+
+@section('extra-css')
   <style>
-    :root {
-      --orange: #D47C17;
-      --black: #070707;
-      --dark-grey: #1a1a1a;
-      --grey: #707070;
-      --white: #FFFFFF;
-      --light: #f8f8f8;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--white);
-      color: #333;
-      line-height: 1.8;
+
+    /* ── Global ───────────────────────────────── */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
-    /* HERO – Dark grey + black mix */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--orange);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+    }
+
+    .section-label::before {
+      content: '—';
+      font-weight: 700;
+      color: var(--orange);
+      font-style: normal;
+      flex-shrink: 0;
+    }
+
+    .section-heading {
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 1.6rem;
+      line-height: 1.2;
+    }
+
+    /* ── Hero ─────────────────────────────────── */
     .hero {
-      background: linear-gradient(rgba(26,26,26,0.96), rgba(7,7,7,0.98)),
-                  url('https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') center/cover;
+      background: linear-gradient(rgba(7,7,7,0.65), rgba(7,7,7,0.65)),
+                  url('{{ asset('images/hardware.avif') }}') center/cover;
       color: white;
       text-align: center;
       padding: 140px 20px 100px;
     }
+
     .hero h1 {
-      font-size: 4.2rem;
-      font-weight: 900;
+      font-size: 3.8rem;
+      font-weight: 700;
       color: var(--orange);
       margin-bottom: 16px;
     }
-    .hero p {
-      font-size: 1.5rem;
-      max-width: 800px;
-      margin: 0 auto;
-      opacity: 0.92;
-    }
 
-    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
-
-    .section-title {
-      font-size: 2.8rem;
-      color: var(--orange);
-      text-align: center;
-      margin: 80px 0 50px;
-      font-weight: 700;
-    }
-
-    /* Our Story */
-    .story-row {
+    /* ── Our Story ────────────────────────────── */
+    .our-story {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 70px;
       align-items: center;
-      margin: 60px 0;
-    }
-    .story-row img {
-      width: 100%;
-      border-radius: 18px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.18);
-    }
-    .story-text h2 {
-      color: var(--orange);
-      font-size: 2.5rem;
-      margin-bottom: 20px;
+      padding: 90px 0 70px;
     }
 
-    /* Vision Quote */
-    .vision {
-      background: var(--light);
-      padding: 70px 40px;
-      border-radius: 20px;
+    .our-story-image {
+      height: 100%;
+    }
+
+    .our-story-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 480px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+
+    .our-story-text p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 1.4rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .feature-item i {
+      color: var(--orange);
+      font-size: 1.3rem;
+      margin-top: 3px;
+    }
+
+    /* ── Vision Quote ─────────────────────────── */
+    .vision-quote-wrap {
+      padding: 55px 0;
+    }
+
+    .vision-quote {
       text-align: center;
-      font-size: 2.3rem;
+      font-size: 2.4rem;
       font-weight: 600;
       font-style: italic;
       color: var(--orange);
-      border-left: 12px solid var(--orange);
-      margin: 100px auto;
       max-width: 1000px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.09);
+      margin: 0 auto;
     }
 
-    /* Vision & Scope + We Serve – Side by Side (unchanged) */
-    .vision-scope-section {
-      background: var(--light);
-      padding: 90px 40px;
-      border-radius: 20px;
-      margin: 100px auto;
-      max-width: 1300px;
+    /* ── Vision & Scope ───────────────────────── */
+    .vision-scope {
+      padding: 60px 0 55px;
+      text-align: center;
+    }
+
+    .vision-scope .section-label {
+      justify-content: center;
+      display: inline-flex;
+    }
+
+    .vision-scope .section-heading {
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 44px;
+    }
+
+    .vision-boxes {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+      gap: 28px;
+      text-align: left;
     }
-    .vision-box, .audience-box {
-      padding: 20px;
+
+    .vision-box {
+      background: #fff;
+      border: 1px solid #ebebeb;
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 6px 28px rgba(0,0,0,0.05);
+      position: relative;
+      overflow: hidden;
     }
-    .vision-box h3, .audience-box h3 {
-      color: var(--orange);
-      font-size: 2.2rem;
-      margin-bottom: 25px;
-      text-align: center;
+
+    .vision-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 5px; height: 100%;
+      background: var(--orange);
+      border-radius: 20px 0 0 20px;
     }
-    .vision-box p {
-      font-size: 1.2rem;
-      text-align: center;
-      line-height: 1.9;
-    }
-    .audience-box ul {
-      list-style: none;
-      font-size: 1.2rem;
-    }
-    .audience-box li {
-      padding: 12px 0;
-      border-bottom: 1px solid #ddd;
+
+    .vision-box-icon {
+      width: 52px; height: 52px;
+      background: rgba(212,124,23,0.1);
+      border-radius: 13px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      margin-bottom: 18px;
     }
-    .audience-box li i {
-      color: var(--orange);
+
+    .vision-box-icon i { font-size: 1.5rem; color: var(--orange); }
+
+    .vision-box h3 {
       font-size: 1.4rem;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 12px;
     }
 
-    /* Why Choose Apex – NOW PERFECTLY RESPONSIVE (2×2 on laptop, 1 column on mobile) */
-    .cards {
+    .vision-box p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #555;
+      margin: 0;
+    }
+
+    .vision-box p strong { color: #000; }
+
+    /* ── We Serve ─────────────────────────────── */
+    .we-serve {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);   /* 4 cards in one row on large screens */
-      gap: 35px;
-      margin: 100px 0;
-      padding: 0 20px;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+      padding: 60px 0 70px;
     }
-    .card {
-      background: white;
-      padding: 45px 30px;
+
+    .serve-list ul {
+      list-style: none;
+      padding: 0;
+      font-size: 1.1rem;
+    }
+
+    .serve-list li {
+      padding: 10px 5px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .serve-list i { color: var(--orange); font-size: 1.4rem; }
+
+    .serve-image {
+      height: 100%;
+    }
+
+    .serve-image img {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      object-fit: cover;
       border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-15px);
-      box-shadow: 0 25px 60px rgba(212,124,23,0.2);
-    }
-    .card i {
-      font-size: 4rem;
-      color: var(--orange);
-      margin-bottom: 25px;
-    }
-    .card h3 {
-      font-size: 1.6rem;
-      margin-bottom: 16px;
-      color: var(--black);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     }
 
-    footer {
-      background: var(--black);
-      color: #aaa;
-      text-align: center;
-      padding: 60px 20px;
-      margin-top: 120px;
+    /* ══════════════════════════════════════════════
+       WHY CHOOSE US  –  full-width #f5f5f3 bg
+       LEFT  = staggered 2×2 card grid
+       RIGHT = heading + text + Shop Now button
+       ══════════════════════════════════════════════ */
+    .why-choose {
+      background: #f5f5f3;
+      padding: 90px 0;
+    }
+
+    .why-choose-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: center;
+    }
+
+    /* 2×2 grid with right column shifted down */
+    .why-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    /* shift every card in the RIGHT column (2nd & 4th child) downward */
+    .why-cards-grid .why-card-new:nth-child(2),
+    .why-cards-grid .why-card-new:nth-child(4) {
+      margin-top: 18px;
+    }
+
+    .why-card-new {
+      border-radius: 18px;
+      padding: 30px 26px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .why-card-new:hover { transform: translateY(-6px); }
+
+    /* dark variant – orange */
+    .why-card-new.dark { background: var(--orange); }
+    .why-card-new.dark h3 { color: #fff; }
+    .why-card-new.dark p  { color: rgba(255,255,255,0.85); }
+    .why-card-new.dark:hover { box-shadow: 0 18px 40px rgba(212,124,23,0.45); }
+    .why-card-new.dark .why-card-icon { background: rgba(255,255,255,0.2); }
+
+    /* light variant */
+    .why-card-new.light { background: #fff; border: 1px solid #e5e5e5; }
+    .why-card-new.light h3 { color: #111; }
+    .why-card-new.light p  { color: #666; }
+    .why-card-new.light:hover { box-shadow: 0 14px 36px rgba(0,0,0,0.09); }
+
+    .why-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .why-card-new.light .why-card-icon { background: rgba(212,124,23,0.1); }
+    .why-card-icon i { font-size: 1.25rem; color: var(--orange); }
+
+    .why-card-new h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .why-card-new p { font-size: 0.97rem; line-height: 1.65; margin: 0; }
+
+    /* right text column */
+    .why-right .section-heading {
+      font-size: 2.9rem;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .why-right .section-heading span { color: var(--orange); }
+
+    .why-subtext {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: #555;
+      margin-bottom: 2rem;
+      max-width: 460px;
+    }
+
+    /* Shop Now button */
+    .btn-shop-now {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--orange);
+      color: #fff;
       font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 26px;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
     }
 
-    /* RESPONSIVE FIXES */
-    @media (max-width: 1200px) {
-      .cards { grid-template-columns: repeat(2, 1fr); }  /* 2×2 on laptops */
+    .btn-shop-now:hover {
+      background: #c96b0a;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(212,124,23,0.4);
+      color: #fff;
+      text-decoration: none;
     }
-    @media (max-width: 768px) {
-      .story-row, .vision-scope-section { grid-template-columns: 1fr; gap: 50px; }
-      .cards { grid-template-columns: 1fr; }  /* 1 column on tablets/phones */
-      .hero h1 { font-size: 3rem; }
-      .section-title { font-size: 2.4rem; }
+
+    .btn-arrow {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.22);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: background 0.25s;
     }
-    @media (max-width: 480px) {
-      .hero { padding: 100px 15px; }
-      .hero h1 { font-size: 2.6rem; }
-      .vision-scope-section { padding: 60px 20px; }
+
+    .btn-shop-now:hover .btn-arrow { background: rgba(255,255,255,0.36); }
+
+    /* ══════════════════════════════════════════════
+       MEET OUR TEAM  –  same full-width #f5f5f3 bg
+       Thin divider separates it from Why Choose Us
+       ══════════════════════════════════════════════ */
+    .meet-team {
+      background: #f5f5f3;
+      padding: 0 0 100px;
     }
+
+    .meet-team-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .meet-team-divider {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .meet-team-divider hr {
+      border: none;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      margin: 0 0 80px;
+    }
+
+    .meet-team-inner .section-label {
+      justify-content: center;
+      display: inline-flex;
+      width: 100%;
+    }
+
+    .meet-team-inner .section-heading {
+      text-align: center;
+    }
+
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+      margin-top: 50px;
+    }
+
+    .team-member {
+      flex: 0 0 calc(20% - 18px); /* 5 per row */
+      text-align: center;
+      padding: 30px 16px 26px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.07);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .team-member:hover {
+      border-color: var(--orange);
+      transform: translateY(-8px);
+      box-shadow: 0 14px 32px rgba(212,124,23,0.12);
+    }
+
+    .team-avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: rgba(212,124,23,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--orange);
+    }
+
+    .team-member h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #111;
+      margin: 0;
+    }
+
+    /* ── Scroll-reveal animation states ──────── */
+    .js-reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 0.85s ease-out, transform 0.85s ease-out;
+    }
+
+    .js-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* instant (no-transition) reset so re-entry re-animates */
+    .js-reveal.reset {
+      transition: none;
+      opacity: 0;
+      transform: translateY(44px);
+    }
+
+    /* ── Responsive ───────────────────────────── */
+    @media (max-width: 1024px) {
+      .why-choose-inner { gap: 48px; padding: 0 28px; }
+      .why-right .section-heading { font-size: 2.4rem; }
+      .meet-team-inner, .meet-team-divider { padding: 0 28px; }
+      .team-member { flex: 0 0 calc(25% - 17px); } /* 4 per row */
+    }
+
+    @media (max-width: 900px) {
+      .our-story, .we-serve { grid-template-columns: 1fr; gap: 48px; }
+      .vision-boxes { grid-template-columns: 1fr; }
+      .why-choose-inner { grid-template-columns: 1fr; }
+      .why-right { order: -1; }
+      .why-cards-grid .why-card-new:nth-child(2),
+      .why-cards-grid .why-card-new:nth-child(4) { margin-top: 0; }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 2.8rem; }
+      .section-heading { font-size: 2rem; }
+      .vision-quote { font-size: 1.8rem; }
+      .why-cards-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .why-choose-inner, .meet-team-inner, .meet-team-divider { padding: 0 20px; }
+      .team-member { flex: 0 0 calc(50% - 11px); } /* 2 per row on mobile */
+    }
+
   </style>
-</head>
-<body>
+@endsection
+
+@section('content')
 
   <!-- Hero -->
   <header class="hero">
-    <h1>About Apex Hardware</h1>
-    
+    <h1>About Apex</h1>
   </header>
 
   <div class="container">
 
     <!-- Our Story -->
-    <h2 class="section-title">Our Story</h2>
-    <div class="story-row">
-      <div class="story-text">
-        <h2>Welcome to Apex Hardware Supply & Tools</h2>
-        <p>Apex was created to make life easier for anyone who loves to build, fix, or create. We know how frustrating it is to waste time driving between stores or waiting weeks for the right tool.</p>
-        <p>That’s why we bring professional-quality tools, materials and hardware straight to your door — fast, affordable, and reliable.</p>
-        <p>From weekend DIY projects to full-scale professional jobs, we’ve got everything you need in one place.</p>
+    <section class="our-story">
+      <div class="our-story-image">
+        <img src="{{ asset('images/Professional.avif') }}" alt="Our Team at Work">
       </div>
-      <img src="C:\Users\Mohammed Hozaifa\OneDrive\Desktop\CS2\Team Project\web pages\hardware.jpeg" alt="Apex Workshop">
-    </div>
+      <div class="our-story-text">
+        <span class="section-label">OUR STORY</span>
+        <h2 class="section-heading">Welcome to Apex Hardware Supply & Tools</h2>
+        <p>At Apex Hardware Supply & Tools, we're passionate about empowering builders, creators, and problem-solvers with the right tools — delivered fast, priced fairly, and backed by real knowledge.</p>
+        <p>Founded with the belief that quality shouldn't come with delays or inflated prices, we've built a one-stop online destination for professional-grade tools, hardware, gardening supplies, and building materials.</p>
+        <div class="features-grid">
+          <div class="feature-item"><i class="fas fa-check-circle"></i><span>Professional-grade tools & materials</span></div>
+          <div class="feature-item"><i class="fas fa-check-circle"></i><span>Next-day delivery across the UK</span></div>
+          <div class="feature-item"><i class="fas fa-check-circle"></i><span>Best prices with no hidden fees</span></div>
+          <div class="feature-item"><i class="fas fa-check-circle"></i><span>Real support from people who use the tools</span></div>
+        </div>
+      </div>
+    </section>
 
     <!-- Vision Quote -->
-    <div class="vision">
-      “Everything you need to turn ideas into reality.”
+    <div class="vision-quote-wrap">
+      <div class="vision-quote js-reveal">
+        "Everything you need to turn ideas into reality."
+      </div>
     </div>
 
-    <div class="vision-scope-section">
-      <div class="vision-box">
-        <h3>Vision & Scope</h3>
-        <p><strong>Vision:</strong> To become the UK’s most trusted online supplier for builders, makers and creators.</p>
-        <p style="margin-top:20px;"><strong>Scope:</strong> Supplying high-quality general tools, power tools, gardening equipment, building materials and electronic components to home DIY enthusiasts, professional tradespeople and small businesses.</p>
+    <!-- Vision & Scope -->
+    <section class="vision-scope">
+      <span class="section-label">VISION &amp; SCOPE</span>
+      <h2 class="section-heading">Our Vision & What We Cover</h2>
+
+      <div class="vision-boxes">
+        <div class="vision-box js-reveal">
+          <div class="vision-box-icon"><i class="fas fa-bullseye"></i></div>
+          <h3>Our Vision</h3>
+          <p>To become the UK's most trusted and convenient online supplier for tradespeople, DIYers, and small businesses — delivering <strong>quality tools and materials</strong> without delay or compromise.</p>
+        </div>
+        <div class="vision-box js-reveal" style="transition-delay:0.16s">
+          <div class="vision-box-icon"><i class="fas fa-layer-group"></i></div>
+          <h3>What We Cover</h3>
+          <p>We supply everything from hand tools, power tools, and accessories to gardening equipment, building materials, hardware, fasteners, and electronic components — serving both <strong>professionals and passionate home creators</strong>.</p>
+        </div>
       </div>
-      <div class="audience-box">
-        <h3>We Serve</h3>
+    </section>
+
+    <!-- We Serve -->
+    <section class="we-serve">
+      <div class="serve-list">
+        <span class="section-label">WE SERVE</span>
+        <h2 class="section-heading">Who We Serve</h2>
         <ul>
-          <li><i class="fas fa-check-circle"></i> Home DIY Enthusiasts & Weekend Warriors</li>
-          <li><i class="fas fa-check-circle"></i> Professional Tradespeople</li>
-          <li><i class="fas fa-check-circle"></i> Small Construction & Landscaping Businesses</li>
-          <li><i class="fas fa-check-circle"></i> Makers, Hobbyists & Electronics Enthusiasts</li>
-          <li><i class="fas fa-check-circle"></i> Schools, Colleges & Workshop Clubs</li>
+          <li><i class="fas fa-hard-hat"></i> Professional Tradespeople & Contractors</li>
+          <li><i class="fas fa-tools"></i> Home DIY Enthusiasts & Weekend Warriors</li>
+          <li><i class="fas fa-building"></i> Small Construction & Renovation Businesses</li>
+          <li><i class="fas fa-seedling"></i> Gardeners & Landscaping Professionals</li>
+          <li><i class="fas fa-plug"></i> Electronics & Maker Hobbyists</li>
+          <li><i class="fas fa-school"></i> Schools, Colleges & Training Workshops</li>
         </ul>
       </div>
+      <div class="serve-image">
+        <img src="{{ asset('images/Story.avif') }}" alt="Our Customers">
+      </div>
+    </section>
+
+  </div><!-- /.container -->
+
+
+  <!-- WHY CHOOSE US – full-width -->
+  <section class="why-choose">
+    <div class="why-choose-inner">
+
+      <!-- LEFT: staggered 2×2 card grid -->
+      <div class="why-cards-grid">
+        <div class="why-card-new dark">
+          <div class="why-card-icon"><i class="fas fa-truck-fast"></i></div>
+          <h3>Lightning-Fast Delivery</h3>
+          <p>Next-day on most items — no long waits, no project delays.</p>
+        </div>
+        <div class="why-card-new light">
+          <div class="why-card-icon"><i class="fas fa-tools"></i></div>
+          <h3>Pro-Grade Quality</h3>
+          <p>Tools trusted by real tradespeople every single day.</p>
+        </div>
+        <div class="why-card-new light">
+          <div class="why-card-icon"><i class="fas fa-pound-sign"></i></div>
+          <h3>Best Prices Guaranteed</h3>
+          <p>Find it cheaper elsewhere? We'll match it — no questions asked.</p>
+        </div>
+        <div class="why-card-new dark">
+          <div class="why-card-icon"><i class="fas fa-headset"></i></div>
+          <h3>Real Human Support</h3>
+          <p>Talk to people who actually use the tools — not just scripts.</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: text + CTA -->
+      <div class="why-right">
+        <span class="section-label">WHY CHOOSE US</span>
+        <h2 class="section-heading">
+          Tools that go<br>
+          <span>beyond</span> expectations.
+        </h2>
+        <p class="why-subtext">
+          We combine quality, speed, and genuine expertise to deliver the right hardware every time.
+          Our team is dedicated to making every project easier — on time and within budget.
+        </p>
+        <a href="{{ route('products') }}" class="btn-shop-now">
+          Shop Now
+          <span class="btn-arrow"><i class="fas fa-arrow-right"></i></span>
+        </a>
+      </div>
+
     </div>
+  </section>
 
-    <!-- Why Choose Apex – Now perfectly in one row on laptop -->
-    <h2 class="section-title">Why Choose Apex?</h2>
-    <div class="cards">
-      <div class="card">
-        <i class="fas fa-tools"></i>
-        <h3>Professional Quality</h3>
-        <p>Tools trusted by real tradespeople every day</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-truck-fast"></i>
-        <h3>Fast Delivery</h3>
-        <p>Next-day delivery on most items</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-shield-alt"></i>
-        <h3>Best Price Guarantee</h3>
-        <p>Find it cheaper elsewhere? We’ll match it</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-headset"></i>
-        <h3>Expert Support</h3>
-        <p>Talk to real humans who understand tools</p>
+
+  <!-- MEET OUR TEAM – same full-width bg, continues seamlessly -->
+  <section class="meet-team">
+    <div class="meet-team-divider">
+      <hr>
+    </div>
+    <div class="meet-team-inner">
+      <span class="section-label">MEET OUR TEAM</span>
+      <h2 class="section-heading">The People Behind Apex</h2>
+
+      <div class="team-grid">
+        @php
+          $team = [
+            ['Adam Abla',        'AA'],
+            ['Oswald Angadi',    'OA'],
+            ['Omar Elshora',     'OE'],
+            ['Mohammed Hozaifa','MH'],
+            ['Sholademi Lateef', 'SL'],
+            ['Bashir Osman',     'BO'],
+            ['Sukhbir Singh',    'SS'],
+            ['Fritz Lucina',     'FL'],
+          ];
+        @endphp
+
+        @foreach($team as [$name, $initials])
+          <div class="team-member">
+            <div class="team-avatar">{{ $initials }}</div>
+            <h4>{{ $name }}</h4>
+          </div>
+        @endforeach
       </div>
     </div>
+  </section>
 
-  </div>
+@endsection
 
-  
-</body>
-</html>
+@section('extra-js')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /**
+   * Repeatable scroll-reveal for ALL .js-reveal elements
+   * - Animates IN  when element reaches 30 % visibility
+   * - Resets silently when element leaves viewport entirely
+   * - Re-animates every time user scrolls back to it
+   */
+  const els = document.querySelectorAll('.js-reveal');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const el = entry.target;
+
+      if (entry.isIntersecting) {
+        // Remove instant-reset, then animate in (double-rAF ensures repaint)
+        el.classList.remove('reset');
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          el.classList.add('visible');
+        }));
+      } else if (entry.intersectionRatio === 0) {
+        // Fully off-screen → snap back without transition so next entry re-animates
+        el.classList.remove('visible');
+        el.classList.add('reset');
+      }
+    });
+  }, { threshold: [0, 0.3] });
+
+  els.forEach(el => io.observe(el));
+
+});
+</script>
+@endsection

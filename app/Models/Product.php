@@ -52,12 +52,7 @@ class Product extends Model{
      */
     public function getStockStatusAttribute(): string
     {
-        if ($this->stock_quantity <= 0) {
-            return 'Out of Stock';
-        } elseif ($this->stock_quantity < 10) {
-            return 'Low Stock';
-        }
-        return 'In Stock';
+        return $this->stock_quantity <= 0 ? 'Out of Stock' : 'In Stock';
     }
 
     /**

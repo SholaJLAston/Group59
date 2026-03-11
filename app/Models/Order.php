@@ -13,12 +13,12 @@ class Order extends Model
     //
     protected $fillable = [
         'user_id',
-        'total_price',
+        'price',
         'status',
     ];
 
     protected $casts = [
-        'total_price' => 'decimal:2',
+        'price' => 'decimal:2',
     ];
 
     public function user(): BelongsTo

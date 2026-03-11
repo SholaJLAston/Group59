@@ -1,3 +1,550 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+/* ────────────────────────────────────────────────
+   ROOT VARIABLES (global)
+──────────────────────────────────────────────── */
+:root {
+  --black: #070707;
+  --orange: #D47C17;
+  --grey: #707070;
+  --white: #FFFFFF;
+  --light: #f8f8f8;
+}
+
+/* ────────────────────────────────────────────────
+   GLOBAL RESET & BASE
+──────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--white);
+  color: #333;
+  line-height: 1.7;
+}
+
+/* ────────────────────────────────────────────────
+   SHARED CONTAINER
+──────────────────────────────────────────────── */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ────────────────────────────────────────────────
+   NAVIGATION – updated version
+──────────────────────────────────────────────── */
+.navbar {
+  background: var(--black);
+  height: 80px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 3px solid var(--orange);
+}
+
+.logo {
+  color: var(--white);
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  height: 60px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logo-brand {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--white);
+  line-height: 1;
+}
+
+.logo-tagline {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--orange);
+  line-height: 1;
+}
+
+.main-links {
+  display: flex;
+  gap: 45px;
+  list-style: none;
+}
+
+.main-links a {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 1.08rem;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+.main-links a:hover,
+.main-links a.active {
+  color: var(--orange);
+}
+
+/* Right side – cart + account dropdown */
+.right-icons {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Cart wrapper – now with relative positioning */
+.cart-wrapper {
+  position: relative;           /* ← THIS LINE fixes the position issue */
+  display: inline-block;        /* helps with inline alignment */
+}
+
+/* Cart icon link */
+.cart-wrapper a {
+  display: flex;
+  align-items: center;
+  color: var(--white);
+  text-decoration: none;
+  position: relative;           /* extra safety – optional */
+}
+
+/* Badge – stays exactly as you have */
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--orange);
+  color: var(--black);
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.cart-wrapper .nav-icon {
+  font-size: 1.4rem;
+  transition: color 0.25s, transform 0.2s;
+}
+
+.cart-wrapper:hover .nav-icon {
+  color: var(--orange);
+  transform: scale(1.15);
+}
+
+
+/* Account Dropdown Container */
+.account-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Account Button (looks like link) */
+.account-btn {
+  color: var(--white);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 12px;
+  border: 2px solid var(--orange);
+  border-radius: 8px;
+  transition: all 0.25s;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.account-btn:hover {
+  background: var(--orange);
+  color: white;
+}
+
+/* Profile Avatar for button */
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+/* Account name display */
+.account-name {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dropdown Content – hidden by default */
+.account-dropdown-content {
+  display: none;                    /* ← most important: hidden by default */
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 220px;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 1000;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+/* Dropdown header for logged-in user */
+.account-header {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.account-header-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.account-header-email {
+  font-size: 0.85rem;
+  color: #666;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.profile-avatar-lg {
+  display: none;
+}
+
+/* Show on hover (desktop) */
+.account-dropdown:hover .account-dropdown-content {
+  display: block;
+}
+
+/* Show on click/tap (mobile + better UX) */
+.account-dropdown.active .account-dropdown-content {
+  display: block;
+}
+
+/* Menu items */
+.account-dropdown-content a,
+.account-dropdown-content button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+  border: none;
+  width: 100%;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+}
+
+.account-dropdown-content a:hover,
+.account-dropdown-content button:hover {
+  background: #f8f8f8;
+  color: var(--orange);
+}
+
+.account-dropdown-content i {
+  width: 18px;
+  text-align: center;
+}
+
+
+/* Show dropdown on click (controlled by JS) */
+.account-dropdown.active .account-dropdown-content {
+  display: block;
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+  display: none;
+  font-size: 1.9rem;
+  color: var(--white);
+  cursor: pointer;
+  transition: color 0.25s;
+}
+
+.menu-toggle:hover {
+  color: var(--orange);
+}
+
+/* Mobile responsive */
+@media (max-width: 920px) {
+  .logo {
+    flex: 1;
+  }
+
+  .logo-text {
+    min-width: 0;
+  }
+
+  .logo-brand {
+    font-size: 1.3rem;
+  }
+
+  .logo-tagline {
+    font-size: 0.6rem;
+  }
+
+  .main-links {
+    display: none;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: var(--black);
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0;
+    gap: 30px;
+    border-top: 1px solid #222;
+    width: 100%;
+    z-index: 999;
+  }
+
+  .main-links.active {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .right-icons {
+    gap: 20px;
+  }
+
+  /* Make dropdown work on mobile */
+  .account-dropdown-content {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 70px;
+    padding: 0 3%;
+  }
+
+  .logo {
+    gap: 8px;
+  }
+
+  .logo-img {
+    height: 50px;
+  }
+
+  .logo-brand {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .logo-tagline {
+    font-size: 0.55rem;
+  }
+
+  .account-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .profile-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .account-name {
+    max-width: 80px;
+  }
+
+  .menu-toggle {
+    font-size: 1.6rem;
+  }
+
+  .right-icons {
+    gap: 16px;
+  }
+}
+
+
+
+
+/* ────────────────────────────────────────────────
+   FOOTER (global – used on every page)
+──────────────────────────────────────────────── */
+.site-footer {
+  background: var(--black);
+  color: #bbb;
+  padding: 80px 0 30px;
+  font-size: 0.95rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.footer-left .footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.footer-logo-img {
+  height: 60px;
+}
+
+.footer-brand {
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-main {
+  font-size: 2.1rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.brand-tagline {
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 2.5px;
+  color: var(--orange);
+  margin-top: -2px;
+}
+
+.footer-text {
+  margin-bottom: 30px;
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 18px;
+}
+
+.social-link {
+  color: #bbb;
+  font-size: 1.4rem;
+  transition: color 0.25s;
+}
+
+.social-link:hover {
+  color: var(--orange);
+}
+
+.footer-middle h3.footer-heading,
+.footer-right h3.footer-heading {
+  color: var(--white);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-links,
+.footer-contact {
+  list-style: none;
+}
+
+.footer-links li,
+.footer-contact li {
+  margin-bottom: 12px;
+}
+
+.footer-links a,
+.footer-contact a {
+  color: #bbb;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+  color: var(--orange);
+}
+
+.footer-contact i {
+  color: var(--orange);
+  font-size: 1.1rem;
+  margin-top: 4px;
+  min-width: 20px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+  font-size: 0.88rem;
+  color: #888;
+}
+
+/* Mobile footer */
+@media (max-width: 968px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 50px;
+    text-align: center;
+  }
+  .footer-left .footer-logo,
+  .social-icons {
+    justify-content: center;
+  }
+  .footer-text {
+    max-width: none;
+  }
+  .footer-contact li {
+    justify-content: center;
+  }
+}

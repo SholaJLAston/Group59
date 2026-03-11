@@ -19,4 +19,12 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
+    /**
+     * Return a URL-friendly slug for the category name.
+     */
+    public function getSlugAttribute(): string
+    {
+        return \Illuminate\Support\Str::slug($this->name);
+    }
+
 }
