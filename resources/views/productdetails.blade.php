@@ -19,6 +19,12 @@
         </div>
       @endif
 
+      @if(session('error'))
+        <div class="success-message" style="background:#fee2e2;color:#991b1b;">
+          {{ session('error') }}
+        </div>
+      @endif
+
       <div class="details-grid">
         <div class="product-image">
           <img src="{{ asset($product->image_url ?: 'images/placeholder.png') }}" alt="{{ $product->name }}">
@@ -59,14 +65,23 @@
 
           <!-- Quantity & Add to Cart -->
           <div class="quantity-add-section">
-            <div class="quantity-group">
-              <button type="button" class="qty-btn" onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">−</button>
-              <input type="number" value="1" min="1" class="quantity-input" id="qty">
-              <button type="button" class="qty-btn" onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
-            </div>
-            <button class="add-to-cart-btn" onclick="addToBasket('{{ addslashes($product->name) }}')">
-              <i class="fas fa-shopping-cart"></i> ADD TO CART
-            </button>
+            @auth
+              <form method="POST" action="{{ route('basket.add', $product) }}" style="display:flex;gap:12px;align-items:center;">
+                @csrf
+                <div class="quantity-group">
+                  <button type="button" class="qty-btn" onclick="const qty = document.getElementById('qty'); qty.value = Math.max(1, parseInt(qty.value || 1) - 1);">−</button>
+                  <input type="number" name="quantity" value="1" min="1" max="99" class="quantity-input" id="qty">
+                  <button type="button" class="qty-btn" onclick="const qty = document.getElementById('qty'); qty.value = parseInt(qty.value || 1) + 1;">+</button>
+                </div>
+                <button class="add-to-cart-btn" type="submit" @disabled(($product->stock_quantity ?? 0) <= 0)>
+                  <i class="fas fa-shopping-cart"></i> ADD TO CART
+                </button>
+              </form>
+            @else
+              <a class="add-to-cart-btn" href="{{ route('login') }}">
+                <i class="fas fa-shopping-cart"></i> LOG IN TO ADD TO CART
+              </a>
+            @endauth
           </div>
 
           <!-- Trust Badges -->
@@ -110,7 +125,6 @@
             <div class="form-group">
               <label class="form-label">Your Review</label>
               <textarea name="comment" class="review-textarea" id="reviewComment" placeholder="Share your experience with this product...">{{ old('comment') }}</textarea>
-              <small id="commentError" style="color:#dc2626; font-size:0.85rem; margin-top:4px; display:none;">Please write a review before submitting.</small>
             </div>
 
             <input type="hidden" name="rating" id="ratingInput" value="{{ old('rating', 0) }}">
@@ -158,11 +172,6 @@
 
 @section('extra-js')
 <script>
-  function addToBasket(name) {
-    const qty = document.getElementById('qty')?.value || 1;
-    alert(`Added "${name}" (Qty: ${qty}) to cart!`);
-  }
-
   // Stars: hover preview + click to select
   let selectedRating = {{ old('rating', 0) }};
 
@@ -191,14 +200,13 @@
     });
   });
 
-  // Form validation – block submit if rating or comment is missing
+  // Form validation – block submit if rating is missing
   const form = document.getElementById('reviewForm');
   if (form) {
     form.addEventListener('submit', function (e) {
       let valid = true;
 
       const rating  = parseInt(document.getElementById('ratingInput').value);
-      const comment = document.getElementById('reviewComment').value.trim();
 
       if (rating < 1) {
         document.getElementById('starError').style.display = 'block';
@@ -207,21 +215,7 @@
         document.getElementById('starError').style.display = 'none';
       }
 
-      if (comment === '') {
-        document.getElementById('commentError').style.display = 'block';
-        valid = false;
-      } else {
-        document.getElementById('commentError').style.display = 'none';
-      }
-
       if (!valid) e.preventDefault();
-    });
-
-    // Hide comment error as user starts typing
-    document.getElementById('reviewComment').addEventListener('input', function () {
-      if (this.value.trim() !== '') {
-        document.getElementById('commentError').style.display = 'none';
-      }
     });
   }
 

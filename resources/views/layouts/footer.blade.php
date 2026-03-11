@@ -30,7 +30,7 @@
           <li><a href="{{ route('products') }}">Shop</a></li>
           <li><a href="{{ route('contact') }}">Contact</a></li>
           <li><a href="{{ route('basket') }}">Basket</a></li>
-          <li><a href="{{ route('account') }}">Account</a></li>
+          <li><a href="{{ route('login') }}">Login</a></li>
         </ul>
       </div>
 

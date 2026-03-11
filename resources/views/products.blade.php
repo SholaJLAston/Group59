@@ -23,6 +23,18 @@
   <!-- Products Section with sidebar filters -->
   <section class="products-section">
     <div class="container shop-layout">
+      @if(session('status'))
+        <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding: .75rem 1rem; border-radius: 8px; background: #dcfce7; color: #166534;">
+          {{ session('status') }}
+        </div>
+      @endif
+
+      @if(session('error'))
+        <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding: .75rem 1rem; border-radius: 8px; background: #fee2e2; color: #991b1b;">
+          {{ session('error') }}
+        </div>
+      @endif
+
       <!-- Sidebar filters (unchanged) -->
       <aside class="shop-sidebar">
         <div class="sidebar-block">
@@ -92,9 +104,19 @@
 
               <div class="product-footer">
                 <div class="product-price">£{{ number_format($product->price, 2) }}</div>
-                <button class="add-to-cart-btn" onclick="addToBasket('{{ addslashes($product->name) }}')">
-                  <i class="fas fa-shopping-cart"></i>
-                </button>
+                @auth
+                  <form method="POST" action="{{ route('basket.add', $product) }}">
+                    @csrf
+                    <input type="hidden" name="quantity" value="1">
+                    <button class="add-to-cart-btn" type="submit" @disabled(!$isInStock) aria-label="Add {{ $product->name }} to basket">
+                      <i class="fas fa-shopping-cart"></i>
+                    </button>
+                  </form>
+                @else
+                  <a class="add-to-cart-btn" href="{{ route('login') }}" aria-label="Log in to add {{ $product->name }} to basket">
+                    <i class="fas fa-shopping-cart"></i>
+                  </a>
+                @endauth
               </div>
             </div>
           </div>
@@ -154,10 +176,6 @@
       inStockOnly.checked = false;
       filterProducts();
     });
-
-    function addToBasket(name) {
-      alert(`Added "${name}" to basket!`);
-    }
 
     // Initial filter on page load
     filterProducts();
