@@ -2,61 +2,101 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Basket;
 use App\Models\BasketItem;
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class BasketController extends Controller
 {
-    //
-    public function add(Product $product): Basket {
-        $basket = Auth::user()->baskets()->firstOrCreate(['user_id' => Auth::id()]);
+    public function index(): View
+    {
+        $basket = Auth::user()->basket()->with('basketItems.product')->first();
+        $items = $basket?->basketItems ?? collect();
 
-        $basketItem = $basket->basketItems()->where('product_id', $product->id)->first();
+        $total = $items->sum(function (BasketItem $item) {
+            $price = (float) ($item->product->price ?? 0);
+            return $price * $item->quantity;
+        });
 
-        if ($basketItem) {
-            $basketItem->quantity += 1;
-            $basketItem->save();
-        } else {
-            $basketItem = BasketItem::create([ 'basket_id'=> $basket->id, 'product_id'=> $product->id, 'quantity'=> 1 ]);
-        }
-
-        return back()->with('Product added to basket successfully.');
+        return view('basket', compact('items', 'total'));
     }
 
-    public function remove(BasketItem $basketItem): Basket {
+    public function add(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'quantity' => 'nullable|integer|min:1|max:99',
+        ]);
+
+        $quantityToAdd = $validated['quantity'] ?? 1;
+
+        if ($product->stock_quantity <= 0) {
+            return back()->with('error', 'This product is currently out of stock.');
+        }
+
+        $basket = Auth::user()->basket()->firstOrCreate();
+        $basketItem = $basket->basketItems()->firstOrNew(['product_id' => $product->id]);
+
+        $currentQty = $basketItem->exists ? $basketItem->quantity : 0;
+        $newQty = $currentQty + $quantityToAdd;
+
+        if ($newQty > $product->stock_quantity) {
+            return back()->with('error', 'Requested quantity exceeds available stock.');
+        }
+
+        $basketItem->quantity = $newQty;
+        $basketItem->save();
+
+        return back()->with('status', 'Product added to basket successfully.');
+    }
+
+    public function update(Request $request, BasketItem $basketItem): RedirectResponse
+    {
+        $this->assertOwnership($basketItem);
+
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1|max:99',
+        ]);
+
+        $quantity = $validated['quantity'];
+        $availableStock = (int) ($basketItem->product->stock_quantity ?? 0);
+
+        if ($quantity > $availableStock) {
+            return back()->with('error', 'Requested quantity exceeds available stock.');
+        }
+
+        $basketItem->update(['quantity' => $quantity]);
+
+        return back()->with('status', 'Basket updated successfully.');
+    }
+
+    public function remove(BasketItem $basketItem): RedirectResponse
+    {
+        $this->assertOwnership($basketItem);
         $basketItem->delete();
 
-        return back()->with('Product removed from basket successfully.');
+        return back()->with('status', 'Product removed from basket successfully.');
     }
 
-    public function update(BasketItem $basketItem, Request $request): Basket {
-        $validated = $request->validated(['quantity'=> 'required|integer|min:1']);
+    public function clear(): RedirectResponse
+    {
+        $basket = Auth::user()->basket;
 
-        if ($validated['quantity'] == 0) {
-            $basketItem->delete();
-            return back()->with('Product removed from basket successfully.');
+        if ($basket) {
+            $basket->basketItems()->delete();
         }
 
-        $basketItem->update(['quantity' => $validated['quantity']]);
-
-        return back()->with('Product updated successfully.');
+        return back()->with('status', 'Basket cleared successfully.');
     }
 
-    public function index()
+    private function assertOwnership(BasketItem $basketItem): void
     {
-        // 
-    }
+        $userBasketId = Auth::user()->basket?->id;
 
-    public function store(Request $request)
-    {
-        // 
-    }
-
-    public function clear()
-    {
-        // 
+        if (!$userBasketId || $basketItem->basket_id !== $userBasketId) {
+            abort(403);
+        }
     }
 }
