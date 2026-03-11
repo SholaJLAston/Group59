@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -36,28 +34,31 @@ class OrderController extends Controller
         $total = 0;
 
         foreach ($basket->basketItems as $basketItem) {
-            $total += $basketItem->price * $basketItem->quantity;
+                $unitPrice = (float) $basketItem->product->price;
+                $total += $unitPrice * $basketItem->quantity;
         }
 
         $order = Order::create([
            'user_id' => Auth::id(),
-           'total_price' => $total,
+              'price' => $total,
            'status' => 'pending'
         ]);
 
         foreach ($basket->basketItems as $basketItem) {
+                $unitPrice = (float) $basketItem->product->price;
+
             OrderItem::create([
                'order_id' => $order->id,
                'product_id' => $basketItem->product_id,
                'quantity' => $basketItem->quantity,
-               'purchase_price' => $basketItem->price,
+                    'purchase_price' => $unitPrice,
             ]);
 
             $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
         }
 
         // Clear basket
-        $basket->basketItems->delete();
+          $basket->basketItems()->delete();
 
         return redirect()->route('order.show', $order);
     }
