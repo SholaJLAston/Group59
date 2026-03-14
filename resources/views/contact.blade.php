@@ -100,7 +100,7 @@
     }
 
     /* Form */
-    form {
+    .contact-form form {
       display: grid;
       gap: 20px;
       background: transparent;
@@ -113,7 +113,8 @@
       gap: 20px;
     }
 
-    input, textarea {
+    .contact-form input,
+    .contact-form textarea {
       width: 100%;
       padding: 16px 18px;
       border: none;
@@ -124,23 +125,25 @@
       font-family: inherit;
     }
 
-    input::placeholder, textarea::placeholder {
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder {
       color: #999;
     }
 
-    input:focus, textarea:focus {
+    .contact-form input:focus,
+    .contact-form textarea:focus {
       outline: none;
       background: #fafafa;
       box-shadow: 0 0 0 2px rgba(212, 124, 23, 0.1);
     }
 
-    textarea { 
+    .contact-form textarea {
       min-height: 140px;
       resize: vertical;
       grid-column: 1 / -1;
     }
 
-    button {
+    .contact-form button {
       background: var(--orange);
       color: white;
       padding: 16px 40px;
@@ -157,11 +160,11 @@
       transition: background 0.3s ease;
     }
 
-    button:hover { 
+    .contact-form button:hover {
       background: #b86b12; 
     }
 
-    button i {
+    .contact-form button i {
       font-size: 1.1rem;
     }
 
@@ -189,19 +192,63 @@
 
     /* Responsiveness */
     @media (max-width: 768px) {
-      .container { 
+      .contact-container {
         grid-template-columns: 1fr; 
-        gap: 60px; 
-        padding: 60px 20px 0;
+        gap: 34px;
+        padding: 50px 16px 0;
       }
-      .hero h1 { font-size: 2.8rem; }
-      .hero { padding: 100px 20px; }
+      .contact-form {
+        padding: 24px 18px;
+      }
+      .hero h1 { font-size: 2.3rem; }
+      .hero p { font-size: 1rem; }
+      .hero { padding: 86px 16px; }
+      .map-section {
+        margin-top: 70px;
+        padding: 44px 14px;
+      }
       .map-container { height: 400px; }
     }
 
     @media (max-width: 480px) {
-      .hero h1 { font-size: 2.5rem; }
+      .hero h1 { font-size: 1.95rem; }
       .contact-info h2, .contact-form h2 { font-size: 1.2rem; }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .map-container { height: 300px; }
+    }
+
+    @media (max-width: 390px) {
+      .hero {
+        padding: 72px 12px;
+      }
+
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+
+      .contact-container {
+        padding: 38px 12px 0;
+      }
+
+      .contact-form {
+        padding: 18px 12px;
+      }
+
+      .contact-form button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .contact-container {
+        grid-template-columns: 1fr;
+        gap: 34px;
+        max-width: 860px;
+      }
     }
 
     /* Success message styling */
@@ -215,9 +262,16 @@
       padding: 1rem 1.5rem;
       border-radius: 0.5rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      z-index: 1000;
+      z-index: 2100;
       animation: slideIn 0.3s ease-out;
       opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    .success-message.hiding {
+      opacity: 0;
+      transform: translateX(36px);
     }
 
     @keyframes slideIn {
@@ -321,18 +375,18 @@
 
 @endsection
 
-@section('scripts')
+@section('extra-js')
 <script>
-  // Auto-hide success message after 5 seconds
+  // Auto-hide success message after ~3 seconds (ecommerce-style toast)
   document.addEventListener('DOMContentLoaded', function() {
     const successMessage = document.querySelector('.success-message');
     if (successMessage) {
       setTimeout(function() {
-        successMessage.style.opacity = '0';
+        successMessage.classList.add('hiding');
         setTimeout(function() {
-          successMessage.style.display = 'none';
-        }, 300);
-      }, 5000);
+          successMessage.remove();
+        }, 360);
+      }, 2800);
     }
   });
 </script>

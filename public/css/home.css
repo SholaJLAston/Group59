@@ -71,7 +71,7 @@
   cursor: pointer;
   transition: all 0.3s;
   text-decoration: none;
-  border-radius: 0;
+  border-radius: 6px;
 }
 
 .btn-shop-now:hover {
@@ -87,19 +87,38 @@
   background: var(--light);
 }
 
+.categories-heading {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.categories-heading .section-label {
+  justify-content: center;
+}
+
 .section-title {
   font-size: 2.8rem;
   color: var(--black);
-  text-align: center;
-  margin-bottom: 60px;
   font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.categories-section .section-title {
+  text-align: center;
+  margin-bottom: 0;
 }
 
 .categories-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 35px;
-  margin-top: 60px;
+  margin-top: 50px;
+}
+
+.categories-grid .category-card {
+  flex: 0 0 calc(33.333% - 24px);
+  max-width: 420px;
 }
 
 .category-card {
@@ -138,14 +157,14 @@
 }
 
 @media (max-width: 1100px) {
-  .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .categories-grid .category-card {
+    flex: 0 0 calc(50% - 18px);
   }
 }
 
 @media (max-width: 768px) {
-  .categories-grid {
-    grid-template-columns: 1fr;
+  .categories-grid .category-card {
+    flex: 0 0 100%;
   }
 }
 
@@ -275,12 +294,8 @@
   letter-spacing: 1.5px;
 }
 
-.section-title {
-  font-size: 2.8rem;
-  font-weight: 600;
-  color: #333333;
+.features-section .section-title {
   text-align: left;
-  margin-bottom: 20px;
 }
 
 .title-underline {
@@ -538,6 +553,28 @@
 }
 
 /* Home responsive (only for home-specific sections) */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 3.2rem;
+  }
+
+  .hero {
+    min-height: 540px;
+  }
+
+  .about-section,
+  .features-section,
+  .cta-faq-section,
+  .categories-section {
+    padding: 88px 0;
+  }
+
+  .section-title,
+  .faq-heading {
+    font-size: 2.3rem;
+  }
+}
+
 @media (max-width: 968px) {
   .cta-faq-grid {
     grid-template-columns: 1fr;
@@ -545,5 +582,155 @@
   }
   .cta-box {
     min-height: 420px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    height: 70vh;
+    min-height: 460px;
+  }
+
+  .hero h1 {
+    font-size: 2.3rem;
+    margin-bottom: 14px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 28px;
+  }
+
+  .btn-shop-now {
+    font-size: 1rem;
+    padding: 12px 24px;
+  }
+
+  .section-title,
+  .faq-heading,
+  .cta-heading,
+  .about-text h3 {
+    font-size: 2rem;
+  }
+
+  .about-text p,
+  .features-intro,
+  .cta-text {
+    font-size: 1rem;
+  }
+
+  .cta-content {
+    padding: 34px 24px;
+  }
+
+  .accordion-header {
+    font-size: 1rem;
+    padding: 16px 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .section-title,
+  .faq-heading,
+  .cta-heading,
+  .about-text h3 {
+    font-size: 1.65rem;
+  }
+
+  .category-card {
+    padding: 18px;
+  }
+
+  .category-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .btn-outline,
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cta-buttons {
+    width: 100%;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero {
+    min-height: 420px;
+  }
+
+  .hero h1 {
+    font-size: 1.72rem;
+    line-height: 1.2;
+  }
+
+  .section-title,
+  .faq-heading,
+  .cta-heading,
+  .about-text h3 {
+    font-size: 1.48rem;
+  }
+
+  .category-card img {
+    height: 150px;
+  }
+
+  .faq-content {
+    padding: 10px 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: 1.58rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .btn-shop-now {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero {
+    height: 62vh;
+    min-height: 500px;
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+  }
+
+  .about-grid,
+  .cta-faq-grid {
+    gap: 42px;
+  }
+
+  .feature-card {
+    padding: 28px 22px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .hero h1 {
+    font-size: 3.7rem;
+  }
+
+  .feature-cards {
+    gap: 22px;
   }
 }

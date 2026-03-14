@@ -13,7 +13,10 @@ class BasketController extends Controller
 {
     public function index(): View
     {
-        $basket = Auth::user()->basket()->with('basketItems.product')->first();
+        $user = Auth::user();
+        $basket = $user
+            ? $user->basket()->with('basketItems.product')->first()
+            : null;
         $items = $basket?->basketItems ?? collect();
 
         $total = $items->sum(function (BasketItem $item) {

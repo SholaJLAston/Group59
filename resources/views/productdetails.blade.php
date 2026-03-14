@@ -13,12 +13,6 @@
         &larr; Back to Products
       </a>
 
-      @if(session('status'))
-        <div class="success-message">
-          {{ session('status') }}
-        </div>
-      @endif
-
       @if(session('error'))
         <div class="success-message" style="background:#fee2e2;color:#991b1b;">
           {{ session('error') }}
@@ -66,7 +60,7 @@
           <!-- Quantity & Add to Cart -->
           <div class="quantity-add-section">
             @auth
-              <form method="POST" action="{{ route('basket.add', $product) }}" style="display:flex;gap:12px;align-items:center;">
+              <form method="POST" action="{{ route('basket.add', $product) }}" class="add-to-basket-form">
                 @csrf
                 <div class="quantity-group">
                   <button type="button" class="qty-btn" onclick="const qty = document.getElementById('qty'); qty.value = Math.max(1, parseInt(qty.value || 1) - 1);">−</button>
@@ -74,12 +68,12 @@
                   <button type="button" class="qty-btn" onclick="const qty = document.getElementById('qty'); qty.value = parseInt(qty.value || 1) + 1;">+</button>
                 </div>
                 <button class="add-to-cart-btn" type="submit" @disabled(($product->stock_quantity ?? 0) <= 0)>
-                  <i class="fas fa-shopping-cart"></i> ADD TO CART
+                  <i class="fas fa-shopping-cart"></i> ADD TO BASKET
                 </button>
               </form>
             @else
               <a class="add-to-cart-btn" href="{{ route('login') }}">
-                <i class="fas fa-shopping-cart"></i> LOG IN TO ADD TO CART
+                <i class="fas fa-shopping-cart"></i> LOG IN TO ADD TO BASKET
               </a>
             @endauth
           </div>

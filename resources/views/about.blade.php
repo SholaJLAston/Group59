@@ -12,26 +12,6 @@
       padding: 0 20px;
     }
 
-    .section-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--orange);
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 0.9rem;
-    }
-
-    .section-label::before {
-      content: '—';
-      font-weight: 700;
-      color: var(--orange);
-      font-style: normal;
-      flex-shrink: 0;
-    }
-
     .section-heading {
       font-size: 2.6rem;
       font-weight: 700;

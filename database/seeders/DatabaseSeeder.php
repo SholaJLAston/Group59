@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 
 class DatabaseSeeder extends Seeder
@@ -16,12 +17,36 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // create a test user
-        User::factory()->create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test@example.com',
-        ]);
+        // Create a default admin account for initial access.
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@apexhardware.com'],
+            [
+                'first_name' => 'Admin',
+                'last_name' => 'User',
+                'phone_number' => '+1 (555) 123-4567',
+                'role' => 'admin',
+                'password' => Hash::make('Admin@12345'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        if ($admin->role !== 'admin') {
+            $admin->role = 'admin';
+            $admin->save();
+        }
+
+        // Create a default customer test account.
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'first_name' => 'Test',
+                'last_name' => 'User',
+                'phone_number' => null,
+                'role' => 'customer',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // product categories with five items each
         $categoryProducts = [

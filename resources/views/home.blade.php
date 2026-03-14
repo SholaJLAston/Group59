@@ -28,7 +28,10 @@
   <!-- Categories -->
   <section id="categories" class="categories-section">
     <div class="container">
-      <h2 class="section-title">Browse Our Categories</h2>
+      <div class="categories-heading">
+        <span class="section-label">Categories</span>
+        <h2 class="section-title">Browse Our Categories</h2>
+      </div>
       <div class="categories-grid">
         <a href="{{ route('products') }}?category=general-tools" class="category-card">
           <img src="{{ asset('images/General Tools.avif') }}" alt="General Tools">

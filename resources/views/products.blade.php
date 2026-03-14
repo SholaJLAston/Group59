@@ -23,12 +23,6 @@
   <!-- Products Section with sidebar filters -->
   <section class="products-section">
     <div class="container shop-layout">
-      @if(session('status'))
-        <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding: .75rem 1rem; border-radius: 8px; background: #dcfce7; color: #166534;">
-          {{ session('status') }}
-        </div>
-      @endif
-
       @if(session('error'))
         <div style="grid-column: 1 / -1; margin-bottom: 1rem; padding: .75rem 1rem; border-radius: 8px; background: #fee2e2; color: #991b1b;">
           {{ session('error') }}
@@ -82,6 +76,9 @@
           @endphp
 
           <div class="product-card"
+            role="link"
+            tabindex="0"
+            data-href="{{ route('products.show', $product) }}"
                data-category="{{ $slug }}"
                data-price="{{ $product->price }}"
                data-stock="{{ $isInStock ? 'in stock' : 'out of stock' }}"
@@ -179,5 +176,27 @@
 
     // Initial filter on page load
     filterProducts();
+
+    // Make the full product card clickable without breaking buttons/links/forms inside it
+    cards.forEach(card => {
+      const navigateToDetails = () => {
+        const href = card.dataset.href;
+        if (href) window.location.href = href;
+      };
+
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('a, button, input, form, select, textarea, label')) {
+          return;
+        }
+        navigateToDetails();
+      });
+
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigateToDetails();
+        }
+      });
+    });
   </script>
 @endsection

@@ -16,10 +16,12 @@
 
    <div class="right-icons">
   <!-- Cart icon -->
-  <div class="cart-wrapper relative">  <!-- added 'relative' class here for safety -->
+  <div class="cart-wrapper relative">
     <a href="{{ route('basket') }}" title="Basket">
       <i class="fas fa-shopping-cart nav-icon"></i>
-      <span class="cart-count">0</span>
+      @if(($basketCount ?? 0) > 0)
+        <span class="cart-count">{{ $basketCount > 99 ? '99+' : $basketCount }}</span>
+      @endif
     </a>
   </div>
   
@@ -39,8 +41,14 @@
         <div class="account-header-email">{{ Auth::user()->email }}</div>
       </div>
       <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
-      <a href="{{ route('profile.edit') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
-      <a href="{{ route('dashboard') }}"><i class="fas fa-cog"></i> Settings</a>
+      @if (Auth::user()->role === 'admin')
+        <a href="{{ route('admin.dashboard') }}"><i class="fas fa-gauge"></i> Dashboard</a>
+        <a href="{{ route('admin.orders') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="{{ route('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
+      @else
+        <a href="{{ route('order.index') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="#" onclick="return false;"><i class="fas fa-cog"></i> Settings</a>
+      @endif
       <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
       <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
         @csrf
