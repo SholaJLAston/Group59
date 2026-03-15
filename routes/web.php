@@ -20,7 +20,9 @@ Route::get('/contact', [ContactController::class, 'create'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Site chatbot endpoint (handles product, stock, and order queries)
-Route::post('/chatbot/query', [ChatbotController::class, 'query'])->name('chatbot.query');
+Route::post('/chatbot/query', [ChatbotController::class, 'query'])
+    ->middleware('throttle:20,1')
+    ->name('chatbot.query');
 
 // Basket page is visible to guests; actions still require login.
 Route::get('/basket', [BasketController::class, 'index'])->name('basket');
