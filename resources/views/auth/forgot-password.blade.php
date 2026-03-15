@@ -1,25 +1,36 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+@extends('layouts.auth')
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@section('title', 'Forgot Password')
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+@section('content')
+    <section class="auth-page">
+        <div class="auth-header">
+            <h1>Reset Password</h1>
+            <p>Enter your email and we will send you a reset link.</p>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
+        <div class="auth-card">
+            @if (session('status'))
+                <div class="auth-status info">{{ session('status') }}</div>
+            @endif
+
+            <form method="POST" action="{{ route('password.email') }}" class="auth-stack">
+                @csrf
+
+                <div class="auth-field">
+                    <label for="email">Email Address</label>
+                    <input id="email" class="auth-input" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
+                    @error('email')
+                        <div class="auth-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <button type="submit" class="auth-btn">Email Password Reset Link</button>
+            </form>
+
+            <div class="auth-meta">
+                Remembered it? <a class="auth-link" href="{{ route('login') }}">Back to login</a>
+            </div>
         </div>
-    </form>
-</x-guest-layout>
+    </section>
+@endsection

@@ -47,7 +47,7 @@
         <a href="{{ route('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
       @else
         <a href="{{ route('order.index') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
-        <a href="#" onclick="return false;"><i class="fas fa-cog"></i> Settings</a>
+        <a href="{{ route('profile.edit') }}"><i class="fas fa-cog"></i> Settings</a>
       @endif
       <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
       <form method="POST" action="{{ route('logout') }}" style="margin: 0;">

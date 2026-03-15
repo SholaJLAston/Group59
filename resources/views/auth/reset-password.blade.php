@@ -1,39 +1,67 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('password.store') }}">
-        @csrf
+@extends('layouts.auth')
 
-        <!-- Password Reset Token -->
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+@section('title', 'Set New Password')
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+@section('content')
+    <section class="auth-page">
+        <div class="auth-header">
+            <h1>Set New Password</h1>
+            <p>Choose a strong password for your account.</p>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="auth-card">
+            <form method="POST" action="{{ route('password.store') }}" class="auth-stack">
+                @csrf
+                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+                <div class="auth-field">
+                    <label for="email">Email Address</label>
+                    <input id="email" class="auth-input" type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username">
+                    @error('email')
+                        <div class="auth-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="auth-field">
+                    <label for="password">New Password</label>
+                    <div class="auth-input-wrap">
+                        <input id="password" class="auth-input" type="password" name="password" required autocomplete="new-password">
+                        <button type="button" class="auth-toggle" data-toggle-password="password" aria-label="Toggle password visibility">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                        <div class="auth-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="auth-field">
+                    <label for="password_confirmation">Confirm Password</label>
+                    <input id="password_confirmation" class="auth-input" type="password" name="password_confirmation" required autocomplete="new-password">
+                    @error('password_confirmation')
+                        <div class="auth-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <button type="submit" class="auth-btn">Reset Password</button>
+            </form>
         </div>
+    </section>
+@endsection
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+@section('extra-js')
+    <script>
+        document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-toggle-password');
+                const input = document.getElementById(targetId);
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required autocomplete="new-password" />
+                if (!input) {
+                    return;
+                }
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Reset Password') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+                input.type = input.type === 'password' ? 'text' : 'password';
+            });
+        });
+    </script>
+@endsection
