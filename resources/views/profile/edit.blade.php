@@ -302,14 +302,14 @@
                         <div class="field-grid-2">
                             <div class="field">
                                 <label class="field-label" for="settings-first-name">First Name</label>
-                                <input id="settings-first-name" name="first_name" type="text" value="{{ old('first_name') }}" required>
+                                <input id="settings-first-name" name="first_name" type="text" value="{{ old('first_name', $user->first_name) }}" required>
                                 @error('first_name')
                                     <div class="error-line">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="field">
                                 <label class="field-label" for="settings-last-name">Last Name</label>
-                                <input id="settings-last-name" name="last_name" type="text" value="{{ old('last_name') }}" required>
+                                <input id="settings-last-name" name="last_name" type="text" value="{{ old('last_name', $user->last_name) }}" required>
                                 @error('last_name')
                                     <div class="error-line">{{ $message }}</div>
                                 @enderror
@@ -318,7 +318,7 @@
 
                         <div class="field">
                             <label class="field-label" for="settings-phone">Phone Number</label>
-                            <input id="settings-phone" name="phone_number" type="text" value="{{ old('phone_number') }}">
+                            <input id="settings-phone" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
                             @error('phone_number')
                                 <div class="error-line">{{ $message }}</div>
                             @enderror
@@ -326,7 +326,7 @@
 
                         <div class="field">
                             <label class="field-label" for="settings-street-address">Street Address</label>
-                            <input id="settings-street-address" name="street_address" type="text" value="{{ old('street_address') }}">
+                            <input id="settings-street-address" name="street_address" type="text" value="{{ old('street_address', $user->street_address) }}">
                             @error('street_address')
                                 <div class="error-line">{{ $message }}</div>
                             @enderror
@@ -335,14 +335,14 @@
                         <div class="field-grid-2">
                             <div class="field">
                                 <label class="field-label" for="settings-city">City</label>
-                                <input id="settings-city" name="city" type="text" value="{{ old('city') }}">
+                                <input id="settings-city" name="city" type="text" value="{{ old('city', $user->city) }}">
                                 @error('city')
                                     <div class="error-line">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="field">
                                 <label class="field-label" for="settings-postal-code">Postal Code</label>
-                                <input id="settings-postal-code" name="postal_code" type="text" value="{{ old('postal_code') }}">
+                                <input id="settings-postal-code" name="postal_code" type="text" value="{{ old('postal_code', $user->postal_code) }}">
                                 @error('postal_code')
                                     <div class="error-line">{{ $message }}</div>
                                 @enderror
