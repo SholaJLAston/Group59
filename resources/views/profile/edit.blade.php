@@ -252,6 +252,7 @@
         $isAdminSettings = $isAdminSettings ?? false;
         $profileRoute = $isAdminSettings ? 'admin.settings.update' : 'profile.update';
         $showSecurityByDefault = $errors->updatePassword->isNotEmpty() || session('status') === 'password-updated';
+        $phoneValue = old('phone_number', $isAdminSettings ? '' : $user->phone_number);
     @endphp
 
     <section class="settings-page">
@@ -318,7 +319,7 @@
 
                         <div class="field">
                             <label class="field-label" for="settings-phone">Phone Number</label>
-                            <input id="settings-phone" name="phone_number" type="text" value="{{ old('phone_number', $user->phone_number) }}">
+                            <input id="settings-phone" name="phone_number" type="text" value="{{ $phoneValue }}">
                             @error('phone_number')
                                 <div class="error-line">{{ $message }}</div>
                             @enderror
