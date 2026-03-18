@@ -40,7 +40,7 @@
             <a href="{{ route('admin.products.index') }}" class="close-btn" title="Close"><i class="fa-solid fa-xmark"></i></a>
         </div>
 
-        <form method="POST" action="{{ route('admin.products.store') }}">
+        <form method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data">
             @csrf
 
             <div class="grid">
@@ -52,10 +52,14 @@
                 <div class="field">
                     <label for="category_id">Category</label>
                     <select id="category_id" name="category_id" class="select" required>
+                        <option value="">Select category</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                         @endforeach
                     </select>
+                    @error('category_id')
+                        <small style="color:#b91c1c;">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="field">
@@ -79,21 +83,17 @@
                 </div>
 
                 <div class="field full">
-                    <label for="image_url">Image URL</label>
-                    <input id="image_url" class="input" name="image_url" value="{{ old('image_url') }}" placeholder="https://...">
+                    <label for="image_file">Product Image</label>
+                    <input id="image_file" class="input" name="image_file" type="file" accept="image/png,image/jpeg,image/jpg,image/webp">
+                    <small style="color:#6b7280;">Upload JPG, PNG, or WEBP (max 5MB)</small>
+                    @error('image_file')
+                        <small style="color:#b91c1c;">{{ $message }}</small>
+                    @enderror
                 </div>
 
-                @php
-                    $createRawImage = trim((string) old('image_url'));
-                    $createPreview = $createRawImage === ''
-                        ? asset('images/logo.png')
-                        : (\Illuminate\Support\Str::startsWith($createRawImage, ['http://', 'https://', '/'])
-                            ? $createRawImage
-                            : asset(ltrim($createRawImage, '/')));
-                @endphp
                 <div class="field full">
                     <label>Preview</label>
-                    <img class="image-preview" src="{{ $createPreview }}" alt="Product image" onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">
+                    <img id="imagePreview" class="image-preview" src="{{ asset('images/logo.png') }}" alt="Product image" onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">
                 </div>
             </div>
 
@@ -104,5 +104,29 @@
         </form>
     </div>
 </div>
+
+<script>
+(() => {
+    const input = document.getElementById('image_file');
+    const preview = document.getElementById('imagePreview');
+    if (!input || !preview) {
+        return;
+    }
+
+    input.addEventListener('change', function () {
+        const file = this.files && this.files[0] ? this.files[0] : null;
+        if (!file) {
+            preview.src = '{{ asset('images/logo.png') }}';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            preview.src = event.target?.result || '{{ asset('images/logo.png') }}';
+        };
+        reader.readAsDataURL(file);
+    });
+})();
+</script>
 @endsection
 
