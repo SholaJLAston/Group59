@@ -8,6 +8,11 @@ use App\Http\Controllers\BasketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 
 // Public pages (no auth required)
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -37,22 +42,56 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        if (auth()->user()?->role !== 'admin') {
-            return redirect()->route('dashboard');
-        }
-
-        return view('home');
-    })->name('dashboard');
+    Route::get('/dashboard', [AdminInventoryController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/settings', [ProfileController::class, 'edit'])
         ->name('settings');
     Route::patch('/settings', [ProfileController::class, 'update'])
         ->name('settings.update');
 
-    // Admin My Orders — shows orders placed by the admin user themselves.
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    // Admin order management (customer transactions and shipments)
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders');
+    Route::get('/orders/search', [AdminOrderController::class, 'search'])->name('orders.search');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
+    Route::post('/orders/{order}/process', [AdminOrderController::class, 'processIncoming'])->name('orders.process');
+
+    // Admin customer management
+    Route::get('/customers', [AdminUserController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{user}', [AdminUserController::class, 'show'])->name('customers.show');
+    Route::get('/customers/{user}/edit', [AdminUserController::class, 'edit'])->name('customers.edit');
+    Route::patch('/customers/{user}', [AdminUserController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{user}', [AdminUserController::class, 'destroy'])->name('customers.destroy');
+    Route::get('/customers/{user}/activity', [AdminUserController::class, 'viewActivity'])->name('customers.activity');
+    Route::get('/customers/{user}/orders', [AdminUserController::class, 'viewOrders'])->name('customers.orders');
+
+    // Customer messages from contact form
+    Route::get('/messages', [AdminUserController::class, 'messages'])->name('messages.index');
+    Route::patch('/messages/{message}/status', [AdminUserController::class, 'updateMessageStatus'])->name('messages.status');
+
+    // Admin product and inventory CRUD
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product}', [AdminProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{product}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
+    Route::patch('/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/products/{product}/stock', [AdminProductController::class, 'manageStock'])->name('products.stock');
+    Route::patch('/products/{product}/stock', [AdminProductController::class, 'updateStock'])->name('products.stock.update');
+
+    Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/incoming', [AdminInventoryController::class, 'createIncoming'])->name('inventory.incoming.create');
+    Route::post('/inventory/incoming', [AdminInventoryController::class, 'storeIncoming'])->name('inventory.incoming.store');
+    Route::get('/inventory/movements', [AdminInventoryController::class, 'movements'])->name('inventory.movements');
+    Route::get('/inventory/alerts', [AdminInventoryController::class, 'lowStockAlerts'])->name('inventory.alerts');
+    Route::patch('/inventory/products/{product}/threshold', [AdminInventoryController::class, 'updateThreshold'])->name('inventory.threshold.update');
+    Route::get('/inventory/products/{product}', [AdminInventoryController::class, 'viewProduct'])->name('inventory.products.show');
+
+    // Real-time reports
+    Route::get('/reports/stock-levels', [AdminReportController::class, 'stockLevels'])->name('reports.stock-levels');
+    Route::get('/reports/incoming-orders', [AdminReportController::class, 'incomingOrders'])->name('reports.incoming-orders');
+    Route::get('/reports/outgoing-orders', [AdminReportController::class, 'outgoingOrders'])->name('reports.outgoing-orders');
 });
 
 Route::middleware('auth')->group(function () {

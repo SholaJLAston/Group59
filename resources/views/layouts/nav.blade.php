@@ -43,7 +43,7 @@
       <hr style="margin: 0; border: none; border-top: 1px solid #eee;">
       @if (Auth::user()->role === 'admin')
         <a href="{{ route('admin.dashboard') }}"><i class="fas fa-gauge"></i> Dashboard</a>
-        <a href="{{ route('admin.orders') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+        <a href="{{ route('order.index') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>
         <a href="{{ route('admin.settings') }}"><i class="fas fa-cog"></i> Settings</a>
       @else
         <a href="{{ route('order.index') }}"><i class="fas fa-shopping-bag"></i> My Orders</a>

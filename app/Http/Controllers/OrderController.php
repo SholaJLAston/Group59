@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\StockMovement;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -55,6 +56,13 @@ class OrderController extends Controller
             ]);
 
             $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
+
+            StockMovement::create([
+                'product_id' => $basketItem->product_id,
+                'type' => 'out',
+                'quantity' => $basketItem->quantity,
+                'reference' => 'Customer order #' . $order->id,
+            ]);
         }
 
         // Clear basket

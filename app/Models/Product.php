@@ -14,11 +14,13 @@ class Product extends Model{
         'description',
         'price',
         'stock_quantity',
+        'low_stock_threshold',
         'image_url',
     ];
 
     protected $casts = [
         'stock_quantity' => 'integer',
+        'low_stock_threshold' => 'integer',
         'price' => 'decimal:2',
     ];
 
@@ -52,7 +54,17 @@ class Product extends Model{
      */
     public function getStockStatusAttribute(): string
     {
-        return $this->stock_quantity <= 0 ? 'Out of Stock' : 'In Stock';
+        if ($this->stock_quantity <= 0) {
+            return 'Out of Stock';
+        }
+
+        $threshold = $this->low_stock_threshold ?? 5;
+
+        if ($this->stock_quantity <= $threshold) {
+            return 'Low Stock';
+        }
+
+        return 'In Stock';
     }
 
     /**
