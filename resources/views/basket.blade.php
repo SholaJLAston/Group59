@@ -545,7 +545,7 @@
           <span>£{{ number_format($total, 2) }}</span>
         </div>
 
-       
+        <a href="{{ route('checkout') }}" class="btn-checkout">
           Proceed to Checkout <i class="fas fa-arrow-right"></i>
         </a>
         <a href="{{ route('products') }}" class="btn-continue">Continue Shopping</a>

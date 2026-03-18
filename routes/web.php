@@ -105,6 +105,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/basket/items/{basketItem}', [BasketController::class, 'remove'])->name('basket.remove');
     Route::delete('/basket', [BasketController::class, 'clear'])->name('basket.clear');
 
+    // checkout flow
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [OrderController::class, 'processCheckout'])->name('checkout.process');
+
     // customer orders
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');

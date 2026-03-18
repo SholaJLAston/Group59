@@ -231,7 +231,7 @@
             <i class="fas fa-arrow-left"></i> Back to My Orders
         </a>
 
-        <h1 class="order-detail-heading">Order #{{ $order->id }}</h1>
+        <h1 class="order-detail-heading">Order {{ $order->order_number }}</h1>
 
         <div class="order-detail-meta">
             <span>Placed on {{ $order->created_at->format('d M Y, H:i') }}</span>
@@ -276,6 +276,26 @@
                 </div>
             </div>
         </div>
+
+        @if($order->shippingAddress)
+        <div class="order-detail-card">
+            <div class="order-detail-card-title">Shipping Address</div>
+            <div style="padding: 16px 20px;">
+                <p style="margin: 0 0 8px; font-weight: 500; color: #111827;">
+                    {{ $order->user->first_name }} {{ $order->user->last_name }}
+                </p>
+                <p style="margin: 0 0 4px; color: #4b5563; font-size: 14px;">
+                    {{ $order->shippingAddress->street_address }}
+                </p>
+                <p style="margin: 0 0 4px; color: #4b5563; font-size: 14px;">
+                    {{ $order->shippingAddress->city }}, {{ $order->shippingAddress->postal_code }}
+                </p>
+                <p style="margin: 0; color: #4b5563; font-size: 14px;">
+                    {{ $order->shippingAddress->phone_number }}
+                </p>
+            </div>
+        </div>
+        @endif
 
     </div>
 </div>

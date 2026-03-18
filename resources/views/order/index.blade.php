@@ -275,7 +275,7 @@
                 <div class="order-card">
                     <div class="order-card-header">
                         <div>
-                            <div class="order-number">Order #{{ $order->id }}</div>
+                            <div class="order-number">{{ $order->order_number }}</div>
                             <div class="order-date">{{ $order->created_at->format('d M Y, H:i') }}</div>
                         </div>
                         <span class="order-status {{ strtolower($order->status) }}">
