@@ -9,6 +9,7 @@ use App\Models\StockMovement;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -26,7 +27,7 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(20)->withQueryString();
-        $categories = Category::orderBy('name')->get(['id', 'name']);
+        $categories = Category::withCount('products')->orderBy('name')->get(['id', 'name']);
 
         return view('admin.products.products-catalog', compact('products', 'categories'));
     }
@@ -49,10 +50,24 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'low_stock_threshold' => ['required', 'integer', 'min:1', 'max:10000'],
-            'image_url' => ['nullable', 'string', 'max:255'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
-        Product::create($validated);
+        $imageUrl = null;
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('products', 'public');
+            $imageUrl = 'storage/' . $path;
+        }
+
+        Product::create([
+            'name' => $validated['name'],
+            'category_id' => (int) $validated['category_id'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock_quantity' => $validated['stock_quantity'],
+            'low_stock_threshold' => $validated['low_stock_threshold'],
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('admin.products.index')->with('status', 'Product created successfully.');
     }
@@ -83,10 +98,28 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'low_stock_threshold' => ['required', 'integer', 'min:1', 'max:10000'],
-            'image_url' => ['nullable', 'string', 'max:255'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
-        $product->update($validated);
+        $imageUrl = $product->image_url;
+        if ($request->hasFile('image_file')) {
+            if (is_string($product->image_url) && str_starts_with($product->image_url, 'storage/products/')) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $product->image_url));
+            }
+
+            $path = $request->file('image_file')->store('products', 'public');
+            $imageUrl = 'storage/' . $path;
+        }
+
+        $product->update([
+            'name' => $validated['name'],
+            'category_id' => (int) $validated['category_id'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock_quantity' => $validated['stock_quantity'],
+            'low_stock_threshold' => $validated['low_stock_threshold'],
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('admin.products.index')->with('status', 'Product updated successfully.');
     }
