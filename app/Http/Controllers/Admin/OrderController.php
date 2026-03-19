@@ -12,7 +12,7 @@ class OrderController extends Controller
     // View all orders
     public function index(Request $request): View
     {
-        $query = Order::with(['user', 'orderItems.product'])->latest();
+        $query = Order::with(['user', 'orderItems.product', 'shippingAddress'])->latest();
 
         if ($search = trim((string) $request->input('q'))) {
             $query->where(function ($inner) use ($search) {
@@ -36,7 +36,7 @@ class OrderController extends Controller
         $selectedOrder = null;
 
         if ($request->filled('selected')) {
-            $selectedOrder = Order::with(['user', 'orderItems.product'])
+            $selectedOrder = Order::with(['user', 'orderItems.product', 'shippingAddress'])
                 ->find((int) $request->input('selected'));
         }
 
@@ -46,7 +46,7 @@ class OrderController extends Controller
     // Show order details
     public function show(Order $order): View
     {
-        $order->load(['user', 'orderItems.product']);
+        $order->load(['user', 'orderItems.product', 'shippingAddress']);
 
         return view('admin.orders.order-detail', compact('order'));
     }
