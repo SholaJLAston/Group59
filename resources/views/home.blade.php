@@ -33,32 +33,23 @@
         <h2 class="section-title">Browse Our Categories</h2>
       </div>
       <div class="categories-grid">
-        <a href="{{ route('products') }}?category=general-tools" class="category-card">
-          <img src="{{ asset('images/General Tools.avif') }}" alt="General Tools">
-          <h3>General Tools</h3>
-          <p>Screwdrivers, hammers, pliers & more</p>
-        </a>
-        <a href="{{ route('products') }}?category=electronic-hardware" class="category-card">
-          <img src="{{ asset('images/Electronic Hardware.avif') }}" alt="Electronic Hardware">
-          <h3>Electronic Hardware</h3>
-          <p>Resistors, circuits, LEDs & components</p>
-        </a>
-        <a href="{{ route('products') }}?category=electronic-tools" class="category-card">
-          <img src="{{ asset('images/Electronic tools.avif') }}" alt="Electronic Tools">
-          <h3>Electronic Tools</h3>
-          <p>Drills, wire strippers, soldering irons</p>
-        </a>
-
-        <a href="{{ route('products') }}?category=gardening-tools" class="category-card">
-          <img src="{{ asset('images/Gardening Tools.avif') }}" alt="Gardening Tools">
-          <h3>Gardening Tools</h3>
-          <p>Shovels, rakes, shears & lawnmowers</p>
-        </a>
-        <a href="{{ route('products') }}?category=materials" class="category-card">
-          <img src="{{ asset('images/Materials.avif') }}" alt="Materials">
-          <h3>Materials</h3>
-          <p>Wood, concrete, soil, metal & more</p>
-        </a>
+        @forelse($categories as $category)
+          @php
+            $rawImage = trim((string) $category->image);
+            $categoryImage = $rawImage === ''
+              ? asset('images/logo.png')
+              : (\Illuminate\Support\Str::startsWith($rawImage, ['http://', 'https://', '/'])
+                  ? $rawImage
+                  : asset(ltrim($rawImage, '/')));
+          @endphp
+          <a href="{{ route('products', ['category' => $category->slug]) }}" class="category-card">
+            <img src="{{ $categoryImage }}" alt="{{ $category->name }}" onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">
+            <h3>{{ $category->name }}</h3>
+            <p>{{ $category->description ?: 'Browse our ' . strtolower($category->name) . ' products' }}</p>
+          </a>
+        @empty
+          <p>No categories available right now.</p>
+        @endforelse
       </div>
     </div>
   </section>
