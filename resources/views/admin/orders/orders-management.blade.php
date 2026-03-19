@@ -112,8 +112,13 @@
 
                 <div class="sec">
                     <div style="font-weight:700;margin-bottom:8px;">Shipping Address</div>
-                    <div class="muted">{{ $selectedOrder->user->street_address ?: '-' }}</div>
-                    <div class="muted">{{ trim(($selectedOrder->user->city ?: '') . ' ' . ($selectedOrder->user->postal_code ?: '')) ?: '-' }}</div>
+                    @if($selectedOrder->shippingAddress)
+                        <div class="muted">{{ $selectedOrder->shippingAddress->street_address }}</div>
+                        <div class="muted">{{ trim($selectedOrder->shippingAddress->city . ' ' . $selectedOrder->shippingAddress->postal_code) }}</div>
+                        <div class="muted">{{ $selectedOrder->shippingAddress->phone_number }}</div>
+                    @else
+                        <div class="muted">No shipping address recorded for this order.</div>
+                    @endif
                 </div>
 
                 <div class="total-row">

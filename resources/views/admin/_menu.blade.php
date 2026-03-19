@@ -3,6 +3,7 @@
     <a href="{{ route('admin.orders') }}" class="btn-admin">Orders</a>
     <a href="{{ route('admin.customers.index') }}" class="btn-admin">Customers</a>
     <a href="{{ route('admin.products.index') }}" class="btn-admin">Products</a>
+    <a href="{{ route('admin.categories.index') }}" class="btn-admin">Categories</a>
     <a href="{{ route('admin.inventory.index') }}" class="btn-admin">Inventory</a>
     <a href="{{ route('admin.inventory.movements') }}" class="btn-admin">Movements</a>
     <a href="{{ route('admin.inventory.alerts') }}" class="btn-admin">Low Stock Alerts</a>
