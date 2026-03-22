@@ -33,7 +33,7 @@ Route::post('/chatbot/query', [ChatbotController::class, 'query'])
 // Basket page is visible to guests; actions still require login.
 Route::get('/basket', [BasketController::class, 'index'])->name('basket');
 
-// Authenticated routes 
+// Authenticated routes (dashboard, profile – you already had these)
 Route::get('/dashboard', function () {
     if (auth()->user()?->role === 'admin') {
         return redirect()->route('admin.dashboard');
@@ -42,7 +42,7 @@ Route::get('/dashboard', function () {
     return app(HomeController::class)->index();
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'verified', 'admin', 'password.changed'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('admin.dashboard');
     });
@@ -105,7 +105,7 @@ Route::middleware(['auth', 'verified', 'admin', 'password.changed'])->prefix('ad
     Route::get('/reports/outgoing-orders', [AdminReportController::class, 'outgoingOrders'])->name('reports.outgoing-orders');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
