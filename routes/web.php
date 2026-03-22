@@ -123,8 +123,6 @@ Route::middleware('auth')->group(function () {
     // customer orders
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
-    Route::post('/orders', [OrderController::class, 'store'])->name('order.store');
-
     // product reviews
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])
         ->name('reviews.store');

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 
 class Order extends Model
@@ -43,13 +44,8 @@ class Order extends Model
         return $this->hasOne(ShippingAddress::class);
     }
 
-    public static function generateOrderNumber(int $userId): string
+    public static function generateOrderNumber(): string
     {
-        $year = date('Y');
-        $count = self::where('user_id', $userId)
-            ->whereYear('created_at', $year)
-            ->count();
-        
-        return sprintf('ORD-%s-%03d', $year, $count + 1);
+        return sprintf('ORD-%s-%s', date('Y'), Str::ulid()->toBase32());
     }
 }

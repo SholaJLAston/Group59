@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ShippingAddress;
 use App\Models\StockMovement;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -28,7 +31,7 @@ class OrderController extends Controller
         return view('order.show', compact('order'));
     }
 
-    public function checkout(): View
+    public function checkout(): View|RedirectResponse
     {
         $user = Auth::user();
         $basket = $user->basket()->with('basketItems.product')->first();
@@ -69,107 +72,79 @@ class OrderController extends Controller
             'phone_number' => 'required|string|max:20',
         ]);
 
-        $total = 0;
+        try {
+            $order = DB::transaction(function () use ($basket, $user, $validated) {
+                $lines = [];
+                $total = 0.0;
 
-        foreach ($basket->basketItems as $basketItem) {
-            $unitPrice = (float) $basketItem->product->price;
-            $total += $unitPrice * $basketItem->quantity;
+                foreach ($basket->basketItems as $basketItem) {
+                    $product = Product::query()->lockForUpdate()->find($basketItem->product_id);
 
-            // Verify stock is still available
-            if ($basketItem->product->stock_quantity < $basketItem->quantity) {
-                return back()->with('error', "Insufficient stock for {$basketItem->product->name}. Available: {$basketItem->product->stock_quantity}");
-            }
+                    if (!$product || $product->stock_quantity < $basketItem->quantity) {
+                        $productName = $basketItem->product?->name ?? 'selected product';
+                        $available = $product?->stock_quantity ?? 0;
+
+                        throw new \RuntimeException("Insufficient stock for {$productName}. Available: {$available}");
+                    }
+
+                    $unitPrice = (float) $product->price;
+                    $lines[] = [
+                        'product' => $product,
+                        'product_id' => $product->id,
+                        'quantity' => $basketItem->quantity,
+                        'purchase_price' => $unitPrice,
+                    ];
+                    $total += $unitPrice * $basketItem->quantity;
+                }
+
+                $order = Order::create([
+                    'user_id' => $user->id,
+                    'order_number' => Order::generateOrderNumber(),
+                    'price' => $total,
+                    'status' => 'pending',
+                ]);
+
+                ShippingAddress::create([
+                    'order_id' => $order->id,
+                    'street_address' => $validated['street_address'],
+                    'city' => $validated['city'],
+                    'postal_code' => $validated['postal_code'],
+                    'phone_number' => $validated['phone_number'],
+                ]);
+
+                foreach ($lines as $line) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $line['product_id'],
+                        'quantity' => $line['quantity'],
+                        'purchase_price' => $line['purchase_price'],
+                    ]);
+
+                    $line['product']->decrement('stock_quantity', $line['quantity']);
+
+                    StockMovement::create([
+                        'product_id' => $line['product_id'],
+                        'type' => 'out',
+                        'quantity' => $line['quantity'],
+                        'reference' => 'Customer order #' . $order->id,
+                    ]);
+                }
+
+                $basket->basketItems()->delete();
+
+                return $order;
+            });
+        } catch (\RuntimeException $exception) {
+            return back()->withInput()->with('error', $exception->getMessage());
         }
-
-        // Generate unique order number for user
-        $orderNumber = Order::generateOrderNumber(Auth::id());
-
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'order_number' => $orderNumber,
-            'price' => $total,
-            'status' => 'pending'
-        ]);
-
-        // Create shipping address
-        ShippingAddress::create([
-            'order_id' => $order->id,
-            'street_address' => $validated['street_address'],
-            'city' => $validated['city'],
-            'postal_code' => $validated['postal_code'],
-            'phone_number' => $validated['phone_number'],
-        ]);
-
-        foreach ($basket->basketItems as $basketItem) {
-            $unitPrice = (float) $basketItem->product->price;
-
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $basketItem->product_id,
-                'quantity' => $basketItem->quantity,
-                'purchase_price' => $unitPrice,
-            ]);
-
-            $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
-
-            StockMovement::create([
-                'product_id' => $basketItem->product_id,
-                'type' => 'out',
-                'quantity' => $basketItem->quantity,
-                'reference' => 'Customer order #' . $order->id,
-            ]);
-        }
-
-        // Clear basket
-        $basket->basketItems()->delete();
 
         return redirect()->route('order.show', $order)->with('success', 'Order created successfully!');
     }
 
     public function store() {
-        $basket = Auth::user()->basket()->with('basketItems.product')->first();
-
-        if (!$basket || $basket->basketItems->isEmpty()) {
-            return back()->with('error', 'Basket is empty');
-        }
-
-        $total = 0;
-
-        foreach ($basket->basketItems as $basketItem) {
-                $unitPrice = (float) $basketItem->product->price;
-                $total += $unitPrice * $basketItem->quantity;
-        }
-
-        $order = Order::create([
-           'user_id' => Auth::id(),
-              'price' => $total,
-           'status' => 'pending'
-        ]);
-
-        foreach ($basket->basketItems as $basketItem) {
-                $unitPrice = (float) $basketItem->product->price;
-
-            OrderItem::create([
-               'order_id' => $order->id,
-               'product_id' => $basketItem->product_id,
-               'quantity' => $basketItem->quantity,
-                    'purchase_price' => $unitPrice,
-            ]);
-
-            $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
-
-            StockMovement::create([
-                'product_id' => $basketItem->product_id,
-                'type' => 'out',
-                'quantity' => $basketItem->quantity,
-                'reference' => 'Customer order #' . $order->id,
-            ]);
-        }
-
-        // Clear basket
-          $basket->basketItems()->delete();
-
-        return redirect()->route('order.show', $order);
+        return redirect()
+            ->route('checkout')
+            ->with('error', 'Please complete your order through checkout.');
     }
 
 }
