@@ -18,6 +18,7 @@
 .table{width:100%;border-collapse:collapse;min-width:920px}
 .table th,.table td{padding:14px 18px;text-align:left;border-top:1px solid #efefef}
 .table th{border-top:none;font-size:12px;letter-spacing:.04em;color:#6b7280;text-transform:uppercase}
+.category-row.active{background:#fff7eb}
 .category-cell{display:flex;align-items:center;gap:12px}
 .category-img{width:52px;height:52px;border-radius:10px;object-fit:cover;border:1px solid #ececec;background:#f6f6f6}
 .category-name{font-size:16px;font-weight:700;color:#1f2937}
@@ -77,7 +78,8 @@
                             ? $rawImage
                             : asset(ltrim($rawImage, '/')));
                 @endphp
-                <tr>
+                <tr class="category-row" 
+                onclick="document.querySelectorAll('.category-row').forEach(r=>r.classList.remove('active')); this.classList.add('active');" style="cursor:pointer;">
                     <td>
                         <div class="category-cell">
                             <img class="category-img" src="{{ $categoryImage }}" alt="{{ $category->name }}" onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">

@@ -20,7 +20,7 @@
 .input:focus,.select:focus,.textarea:focus{outline:none;border-color:#d88411;box-shadow:0 0 0 3px #f8e8cf}
 .image-preview{width:84px;height:84px;border-radius:12px;object-fit:cover;border:1px solid #ececec;background:#f6f6f6}
 .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
-.btn{padding:11px 16px;border-radius:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent}
+.btn{padding:11px 16px;border-radius:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;cursor: pointer}
 .btn-cancel{background:#fff;border-color:#e5e7eb;color:#374151}
 .btn-cancel:hover{background:#f9fafb}
 .btn-save{background:#d88411;color:#fff}
@@ -69,7 +69,7 @@
 
                 <div class="field full">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" class="textarea">{{ old('description') }}</textarea>
+                    <textarea id="description" name="description" class="textarea" required>{{ old('description') }}</textarea>
                 </div>
 
                 <div class="field">

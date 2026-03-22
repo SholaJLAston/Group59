@@ -22,6 +22,7 @@
 .table{width:100%;border-collapse:collapse;min-width:920px}
 .table th,.table td{padding:14px 18px;text-align:left;border-top:1px solid #efefef}
 .table th{border-top:none;font-size:12px;letter-spacing:.04em;color:#6b7280;text-transform:uppercase}
+.product-row.active{background:#fff7eb}
 .product-cell{display:flex;align-items:center;gap:14px}
 .product-img{width:58px;height:58px;border-radius:10px;object-fit:cover;border:1px solid #ececec;background:#f6f6f6}
 .product-name{font-size:17px;font-weight:700;color:#1f2937}
@@ -105,7 +106,9 @@
                             ? $rawImage
                             : asset(ltrim($rawImage, '/')));
                 @endphp
-                <tr>
+                <tr class="product-row" 
+                onclick="document.querySelectorAll('.product-row').forEach(r=>r.classList.remove('active')); this.classList.add('active');" style="cursor:pointer;"
+                >
                     <td>
                         <div class="product-cell">
                             <img class="product-img" src="{{ $productImage }}" alt="{{ $product->name }}" onerror="this.onerror=null;this.src='{{ asset('images/logo.png') }}';">
