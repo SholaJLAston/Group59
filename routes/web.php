@@ -108,6 +108,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/delete/google/reauth', [\App\Http\Controllers\Auth\GoogleOAuthController::class, 'startDeleteReauth'])
+        ->name('profile.delete.google.reauth');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // basket routes (actions only)

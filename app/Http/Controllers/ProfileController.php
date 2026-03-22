@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -62,11 +63,34 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
+
+        $isGoogleUser = ($user->auth_provider ?? 'local') === 'google';
+
+        if ($isGoogleUser) {
+            $confirmedAt = $request->session()->get('google_delete_confirmed_at');
+
+            if (!$confirmedAt) {
+                return Redirect::route('profile.edit')
+                    ->withErrors(['google_reauth' => 'Please confirm with Google before deleting your account.'], 'userDeletion');
+            }
+
+            $confirmedAtTime = CarbonImmutable::parse((string) $confirmedAt);
+            if (now()->greaterThan($confirmedAtTime->addMinutes(5))) {
+                $request->session()->forget('google_delete_confirmed_at');
+
+                return Redirect::route('profile.edit')
+                    ->withErrors(['google_reauth' => 'Google confirmation expired. Please confirm again.'], 'userDeletion');
+            }
+
+            $request->session()->forget('google_delete_confirmed_at');
+        } else {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
+        }
+
+        $request->session()->forget('google_delete_reauth');
 
         Auth::logout();
 

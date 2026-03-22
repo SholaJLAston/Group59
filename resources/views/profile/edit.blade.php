@@ -108,6 +108,7 @@
             display: flex;
             gap: 12px;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .btn-modal-cancel {
@@ -119,6 +120,21 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
+        }
+
+        .btn-modal-google {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #111827;
+            height: 42px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-google:hover {
+            background: #f9fafb;
         }
 
         .btn-modal-cancel:hover {
@@ -134,6 +150,20 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 14px;
+        }
+
+        .modal-delete-footer .btn-modal-cancel,
+        .modal-delete-footer .btn-modal-delete {
+            min-width: 185px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-modal-delete[disabled] {
+            opacity: 0.55;
+            cursor: not-allowed;
         }
 
         .btn-modal-delete:hover {
@@ -318,6 +348,11 @@
 
             .settings-tab-btn {
                 font-size: 14px;
+            }
+
+            .modal-delete-footer .btn-modal-cancel,
+            .modal-delete-footer .btn-modal-delete {
+                width: 100%;
             }
         }
 
@@ -516,8 +551,20 @@
                     </div>
 
                     <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">
-                        If you wish to delete your account permanently, click the button below. You will be asked to confirm your password.
+                        @if (($user->auth_provider ?? 'local') === 'google')
+                            If you wish to delete your account permanently, click the button below. You will confirm with Google first, then complete deletion.
+                        @else
+                            If you wish to delete your account permanently, click the button below. You will be asked to confirm your password.
+                        @endif
                     </p>
+
+                    @if (session('status') === 'google-delete-reauth-confirmed')
+                        <p class="status-ok">Google confirmation complete. Open delete and confirm to permanently remove your account.</p>
+                    @endif
+
+                    @if ($errors->userDeletion->has('google_reauth'))
+                        <div class="error-line">{{ $errors->userDeletion->first('google_reauth') }}</div>
+                    @endif
 
                     <button type="button" class="btn-delete-account" onclick="document.getElementById('deleteAccountModal').classList.add('show')">
                         <i class="fas fa-trash"></i>
@@ -541,36 +588,67 @@
             </p>
 
             <p class="modal-delete-text">
-                Please enter your password to confirm you want to permanently delete your account.
+                @if (($user->auth_provider ?? 'local') === 'google')
+                    Confirm with Google first, then permanently delete your account.
+                @else
+                    Please enter your password to confirm you want to permanently delete your account.
+                @endif
             </p>
+
+            @if (($user->auth_provider ?? 'local') === 'google')
+                @if (session('status') === 'google-delete-reauth-confirmed')
+                    <p class="status-ok">Google confirmation complete. You can now delete your account.</p>
+                @endif
+
+                @if ($errors->userDeletion->has('google_reauth'))
+                    <div class="error-line">{{ $errors->userDeletion->first('google_reauth') }}</div>
+                @endif
+
+                <form method="POST" action="{{ route('profile.delete.google.reauth') }}" style="margin-bottom:12px;">
+                    @csrf
+                    <button type="submit" class="btn-modal-google">
+                        Continue with Google
+                    </button>
+                </form>
+            @endif
 
             <form method="POST" action="{{ route('profile.destroy') }}" id="deleteAccountForm">
                 @csrf
                 @method('DELETE')
 
-                <div class="field">
-                    <label class="field-label" for="delete-password">Your Password</label>
-                    <input 
-                        id="delete-password" 
-                        name="password" 
-                        type="password" 
-                        placeholder="Enter your password"
-                        required
-                        autofocus
-                    >
-                    @if ($errors->userDeletion->has('password'))
-                        <div class="error-line">{{ $errors->userDeletion->first('password') }}</div>
-                    @endif
-                </div>
+                @if (($user->auth_provider ?? 'local') !== 'google')
+                    <div class="field">
+                        <label class="field-label" for="delete-password">Your Password</label>
+                        <input 
+                            id="delete-password" 
+                            name="password" 
+                            type="password" 
+                            placeholder="Enter your password"
+                            required
+                            autofocus
+                        >
+                        @if ($errors->userDeletion->has('password'))
+                            <div class="error-line">{{ $errors->userDeletion->first('password') }}</div>
+                        @endif
+                    </div>
+                @endif
 
                 <div class="modal-delete-footer">
                     <button type="button" class="btn-modal-cancel" onclick="document.getElementById('deleteAccountModal').classList.remove('show')">
                         Cancel
                     </button>
-                    <button type="submit" class="btn-modal-delete">
+                    <button
+                        type="submit"
+                        class="btn-modal-delete"
+                        @if (($user->auth_provider ?? 'local') === 'google' && !session()->has('google_delete_confirmed_at')) disabled @endif
+                    >
                         Delete Account Permanently
                     </button>
                 </div>
+
+                @if (($user->auth_provider ?? 'local') === 'google' && !session()->has('google_delete_confirmed_at'))
+                    <div class="field-note">Complete Google confirmation first to enable account deletion.</div>
+                @endif
             </form>
         </div>
     </div>
@@ -590,29 +668,46 @@
         (function () {
             const tabButtons = document.querySelectorAll('.settings-tab-btn');
             const tabPanels = document.querySelectorAll('.settings-panel');
+            const deleteModal = document.getElementById('deleteAccountModal');
+            const deleteTabButton = document.querySelector('[data-tab="delete-panel"]');
+            const shouldOpenDeleteFlow = @json(session('status') === 'google-delete-reauth-confirmed' || $errors->userDeletion->isNotEmpty());
+
+            function activateTab(targetId) {
+                tabButtons.forEach((btn) => btn.classList.remove('active'));
+                tabPanels.forEach((panel) => panel.classList.remove('active'));
+
+                const button = document.querySelector('[data-tab="' + targetId + '"]');
+                const panel = document.getElementById(targetId);
+
+                if (button) {
+                    button.classList.add('active');
+                }
+
+                if (panel) {
+                    panel.classList.add('active');
+                }
+            }
 
             tabButtons.forEach((button) => {
                 button.addEventListener('click', function () {
                     const targetId = this.getAttribute('data-tab');
-
-                    tabButtons.forEach((btn) => btn.classList.remove('active'));
-                    tabPanels.forEach((panel) => panel.classList.remove('active'));
-
-                    this.classList.add('active');
-                    const panel = document.getElementById(targetId);
-
-                    if (panel) {
-                        panel.classList.add('active');
-                    }
+                    activateTab(targetId);
                 });
             });
+
+            if (shouldOpenDeleteFlow) {
+                activateTab('delete-panel');
+
+                if (deleteModal) {
+                    deleteModal.classList.add('show');
+                }
+            }
 
             // Close modal on Escape key
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
-                    const modal = document.getElementById('deleteAccountModal');
-                    if (modal) {
-                        modal.classList.remove('show');
+                    if (deleteModal) {
+                        deleteModal.classList.remove('show');
                     }
                 }
             });

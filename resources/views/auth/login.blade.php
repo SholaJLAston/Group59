@@ -48,6 +48,19 @@
         <button type="submit" class="auth-btn">Sign In</button>
       </form>
 
+      <div style="margin:16px 0;text-align:center;color:#999;font-size:13px;">Or continue with</div>
+
+<a href="{{ route('google') }}"
+   style="display:flex;align-items:center;justify-content:center;gap:10px;
+          background:#fff;color:#000;border:1px solid #dadce0;
+          border-radius:4px;padding:10px 16px;text-decoration:none;
+          font-family:Roboto, Arial, sans-serif;font-size:14px;
+          box-shadow:0 1px 2px rgba(0,0,0,0.1);transition:background 0.3s;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" 
+       alt="Google Logo" style="height:18px;width:18px;">
+  Sign in with Google
+</a>
+
       <div class="auth-meta">
         No account yet? <a class="auth-link" href="{{ route('register') }}">Create one</a>
       </div>
