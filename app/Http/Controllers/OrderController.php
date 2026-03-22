@@ -8,6 +8,7 @@ use App\Models\ShippingAddress;
 use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -81,47 +82,48 @@ class OrderController extends Controller
             }
         }
 
-        // Generate unique order number for user
-        $orderNumber = Order::generateOrderNumber(Auth::id());
+        $order = DB::transaction(function () use ($validated, $basket, $total) {
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'order_number' => Order::generateTemporaryOrderNumber(),
+                'price' => $total,
+                'status' => 'pending',
+            ]);
 
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'order_number' => $orderNumber,
-            'price' => $total,
-            'status' => 'pending'
-        ]);
+            $order->update(['order_number' => Order::generateOrderNumberFromId($order->id)]);
 
-        // Create shipping address
-        ShippingAddress::create([
-            'order_id' => $order->id,
-            'street_address' => $validated['street_address'],
-            'city' => $validated['city'],
-            'postal_code' => $validated['postal_code'],
-            'phone_number' => $validated['phone_number'],
-        ]);
-
-        foreach ($basket->basketItems as $basketItem) {
-            $unitPrice = (float) $basketItem->product->price;
-
-            OrderItem::create([
+            ShippingAddress::create([
                 'order_id' => $order->id,
-                'product_id' => $basketItem->product_id,
-                'quantity' => $basketItem->quantity,
-                'purchase_price' => $unitPrice,
+                'street_address' => $validated['street_address'],
+                'city' => $validated['city'],
+                'postal_code' => $validated['postal_code'],
+                'phone_number' => $validated['phone_number'],
             ]);
 
-            $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
+            foreach ($basket->basketItems as $basketItem) {
+                $unitPrice = (float) $basketItem->product->price;
 
-            StockMovement::create([
-                'product_id' => $basketItem->product_id,
-                'type' => 'out',
-                'quantity' => $basketItem->quantity,
-                'reference' => 'Customer order #' . $order->id,
-            ]);
-        }
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $basketItem->product_id,
+                    'quantity' => $basketItem->quantity,
+                    'purchase_price' => $unitPrice,
+                ]);
 
-        // Clear basket
-        $basket->basketItems()->delete();
+                $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
+
+                StockMovement::create([
+                    'product_id' => $basketItem->product_id,
+                    'type' => 'out',
+                    'quantity' => $basketItem->quantity,
+                    'reference' => 'Customer order #' . $order->id,
+                ]);
+            }
+
+            $basket->basketItems()->delete();
+
+            return $order;
+        });
 
         return redirect()->route('order.show', $order)->with('success', 'Order created successfully!');
     }
@@ -140,34 +142,40 @@ class OrderController extends Controller
                 $total += $unitPrice * $basketItem->quantity;
         }
 
-        $order = Order::create([
-           'user_id' => Auth::id(),
-              'price' => $total,
-           'status' => 'pending'
-        ]);
+        $order = DB::transaction(function () use ($basket, $total) {
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'order_number' => Order::generateTemporaryOrderNumber(),
+                'price' => $total,
+                'status' => 'pending',
+            ]);
 
-        foreach ($basket->basketItems as $basketItem) {
+            $order->update(['order_number' => Order::generateOrderNumberFromId($order->id)]);
+
+            foreach ($basket->basketItems as $basketItem) {
                 $unitPrice = (float) $basketItem->product->price;
 
-            OrderItem::create([
-               'order_id' => $order->id,
-               'product_id' => $basketItem->product_id,
-               'quantity' => $basketItem->quantity,
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $basketItem->product_id,
+                    'quantity' => $basketItem->quantity,
                     'purchase_price' => $unitPrice,
-            ]);
+                ]);
 
-            $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
+                $basketItem->product->decrement('stock_quantity', $basketItem->quantity);
 
-            StockMovement::create([
-                'product_id' => $basketItem->product_id,
-                'type' => 'out',
-                'quantity' => $basketItem->quantity,
-                'reference' => 'Customer order #' . $order->id,
-            ]);
-        }
+                StockMovement::create([
+                    'product_id' => $basketItem->product_id,
+                    'type' => 'out',
+                    'quantity' => $basketItem->quantity,
+                    'reference' => 'Customer order #' . $order->id,
+                ]);
+            }
 
-        // Clear basket
-          $basket->basketItems()->delete();
+            $basket->basketItems()->delete();
+
+            return $order;
+        });
 
         return redirect()->route('order.show', $order);
     }
