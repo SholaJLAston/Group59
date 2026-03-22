@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BasketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -123,6 +124,12 @@ Route::middleware('auth')->group(function () {
     // customer orders
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
+
+    // customer returns
+    Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
+    Route::get('/returns/{return}', [ReturnController::class, 'show'])->name('returns.show');
+    Route::post('/orders/{order}/returns', [ReturnController::class, 'store'])->name('returns.store');
+
     // product reviews
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])
         ->name('reviews.store');

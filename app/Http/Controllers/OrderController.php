@@ -26,7 +26,7 @@ class OrderController extends Controller
         if ($order->user_id != Auth::id()) {
             abort(403);
         }
-        $order->load('orderItems.product', 'shippingAddress', 'user');
+        $order->load('orderItems.product', 'shippingAddress', 'user', 'returns');
 
         return view('order.show', compact('order'));
     }

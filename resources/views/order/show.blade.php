@@ -297,6 +297,70 @@
         </div>
         @endif
 
+        <div class="order-detail-card">
+            <div class="order-detail-card-title">Returns</div>
+            <div style="padding: 16px 20px;">
+                @if (session('success'))
+                    <div style="background:#ecfdf3;border:1px solid #9ae6b4;color:#14532d;padding:10px 12px;margin-bottom:12px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div style="background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;padding:10px 12px;margin-bottom:12px;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if ($order->returns->isNotEmpty())
+                    <p style="margin:0 0 10px;color:#4b5563;font-size:14px;">
+                        A return request already exists for this order.
+                    </p>
+                    <a href="{{ route('returns.show', $order->returns->first()) }}" style="color:#d47c17;font-weight:600;text-decoration:none;">
+                        View return request
+                    </a>
+                @else
+                    <p style="margin:0 0 10px;color:#4b5563;font-size:14px;">
+                        Need to return this order? Submit a return request below.
+                    </p>
+
+                    <form method="POST" action="{{ route('returns.store', $order) }}" style="display:grid;gap:10px;max-width:540px;">
+                        @csrf
+
+                        <div>
+                            <label for="reason" style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;">Reason</label>
+                            <select id="reason" name="reason" required style="width:100%;border:1px solid #d1d5db;padding:10px;font-size:14px;">
+                                <option value="">Select a reason</option>
+                                <option value="defective" {{ old('reason') === 'defective' ? 'selected' : '' }}>Defective</option>
+                                <option value="wrong_item" {{ old('reason') === 'wrong_item' ? 'selected' : '' }}>Wrong item</option>
+                                <option value="no_longer_needed" {{ old('reason') === 'no_longer_needed' ? 'selected' : '' }}>No longer needed</option>
+                                <option value="other" {{ old('reason') === 'other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                            @error('reason')
+                                <div style="color:#b91c1c;font-size:12px;margin-top:4px;">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="comments" style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:4px;">Comments (optional)</label>
+                            <textarea id="comments" name="comments" rows="3" style="width:100%;border:1px solid #d1d5db;padding:10px;font-size:14px;">{{ old('comments') }}</textarea>
+                            @error('comments')
+                                <div style="color:#b91c1c;font-size:12px;margin-top:4px;">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                            <button type="submit" style="background:#111827;color:#fff;border:0;padding:10px 14px;cursor:pointer;font-weight:600;">
+                                Submit Return Request
+                            </button>
+
+                            <a href="{{ route('returns.index') }}" style="color:#d47c17;text-decoration:none;font-weight:600;">View all my returns</a>
+                        </div>
+                    </form>
+                @endif
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
