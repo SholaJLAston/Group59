@@ -359,13 +359,26 @@
     @php
         $isAdminSettings = $isAdminSettings ?? false;
         $profileRoute = $isAdminSettings ? 'admin.settings.update' : 'profile.update';
-        $showSecurityByDefault = $errors->updatePassword->isNotEmpty() || session('status') === 'password-updated';
+        $requirePasswordChange = $isAdminSettings && !$user->password_changed;
+        $showSecurityByDefault = $requirePasswordChange || $errors->updatePassword->isNotEmpty() || session('status') === 'password-updated';
         $phoneValue = old('phone_number', $isAdminSettings ? '' : $user->phone_number);
     @endphp
 
     <section class="settings-page">
         <div class="settings-shell">
             <h1 class="settings-title">Account Settings</h1>
+
+            @if ($requirePasswordChange)
+                <div style="background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:12px 14px;margin-bottom:14px;">
+                    Please change your password to continue using the platform.
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div style="background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;padding:12px 14px;margin-bottom:14px;">
+                    {{ session('error') }}
+                </div>
+            @endif
 
             <div class="settings-tabs" style="grid-template-columns: 1fr 1fr 1fr;">
                 <button type="button" class="settings-tab-btn {{ $showSecurityByDefault ? '' : 'active' }}" data-tab="profile-panel">
