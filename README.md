@@ -47,7 +47,7 @@ Update values as necessary.
 
 ## 4. Install Composer Dependencies (Without Local Composer)
 
-Since the `vendor/` directory is not included in version control, install the dependencies using Sail's official PHP 8.4 Composer image. This ensures the same PHP version used by Sail is used for dependency resolution.
+Since the `vendor/` directory is not included in version control, install the dependencies using Sail's official PHP 8.2 Composer image. This ensures the same PHP version used by Sail is used for dependency resolution.
 
 ```bash
 docker run --rm \
