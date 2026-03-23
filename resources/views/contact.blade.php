@@ -355,7 +355,7 @@
           <input type="email" name="email" placeholder="Email Address" required>
         </div>
         <input type="text" name="subject" placeholder="Subject" required>
-        <textarea name="message" placeholder="Tell us more about your inquiry..." required></textarea>
+        <textarea name="message" placeholder="Tell us more about your inquiry or leave us a review, any feedback would be welcome!" required></textarea>
         <button type="submit"><i class="fas fa-paper-plane"></i> SEND MESSAGE</button>
       </form>
     </div>

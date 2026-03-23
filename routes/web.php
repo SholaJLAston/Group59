@@ -22,7 +22,7 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Contact form routes (cleaned up – only one GET name)
+// Contact form routes 
 Route::get('/contact', [ContactController::class, 'create'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
@@ -34,7 +34,7 @@ Route::post('/chatbot/query', [ChatbotController::class, 'query'])
 // Basket page is visible to guests; actions still require login.
 Route::get('/basket', [BasketController::class, 'index'])->name('basket');
 
-// Authenticated routes (dashboard, profile – you already had these)
+// Authenticated routes 
 Route::get('/dashboard', function () {
     if (auth()->user()?->role === 'admin') {
         return redirect()->route('admin.dashboard');
