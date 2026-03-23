@@ -1,5 +1,5 @@
 <?php
-
+//test for authentication - ensure a user is logging in with the correct credentials
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
