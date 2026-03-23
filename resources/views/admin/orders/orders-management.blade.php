@@ -16,6 +16,7 @@
 .table th,.table td{padding:14px 16px;border-bottom:1px solid #f1f1f1;font-size:14px;text-align:left}
 .table th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#6a6a6a}
 .order-row.active{background:#fff7eb}
+/*.order-row:hover { background: #fff7eb; } */
 .order-id{font-size:34px;font-weight:700;color:#141414}
 .item-count{color:#6e6e6e;font-size:13px}
 .badge{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
@@ -24,9 +25,10 @@
 .act-link:hover{background:#fff1dd;color:#d88411}
 .details{padding:16px;border-radius:18px}
 .details h3{margin:0 0 14px;font-family:'Oswald',sans-serif;font-size:30px;line-height:1;text-transform:uppercase}
-.details .sec{margin-bottom:16px}
-.detail-item{display:flex;gap:10px;align-items:flex-start}
-.detail-item img{width:58px;height:58px;object-fit:cover;border-radius:10px;border:1px solid #ececec}
+.details .sec{margin-bottom:16px; padding: 16px; background: #f9f9f9; border-radius: 12px;}
+.detail-item{display:flex;align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e2e2e2;}
+.detail-item:last-child { border-bottom: none; }
+.shipping-address { display: flex; flex-direction: column; gap: 4px; }
 .muted{color:#6e6e6e;font-size:13px}
 .total-row{display:flex;justify-content:space-between;font-weight:700;font-size:20px;padding-top:12px;border-top:1px solid #ececec}
 .empty-box{padding:42px 16px;color:#747474;text-align:center}
@@ -53,14 +55,16 @@
     <div class="orders-grid">
         <div class="card">
             <table class="table">
-                <thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead>
+                <thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
                 <tbody>
                 @forelse($orders as $order)
                     @php
                         $query = request()->query();
                         $query['selected'] = $order->id;
                     @endphp
-                    <tr class="order-row {{ ($selectedOrder?->id === $order->id) ? 'active' : '' }}">
+                    <tr class="order-row {{ ($selectedOrder?->id === $order->id) ? 'active' : '' }}"
+                        onclick="window.location='{{ route('admin.orders', $query) }}'"
+                        style="cursor:pointer;">
                         <td>
                             <div class="order-id">#{{ strtoupper(substr(md5((string) $order->id), 0, 8)) }}</div>
                             <div class="item-count">{{ $order->orderItems->sum('quantity') }} items</div>
@@ -68,7 +72,6 @@
                         <td>{{ $order->created_at->format('n/j/Y') }}</td>
                         <td><span class="badge {{ strtolower($order->status) }}">{{ ucfirst($order->status) }}</span></td>
                         <td>&pound;{{ number_format((float) $order->price, 2) }}</td>
-                        <td><a class="act-link" href="{{ route('admin.orders', $query) }}"><i class="fa-regular fa-eye"></i></a></td>
                     </tr>
                 @empty
                     <tr><td colspan="5">No orders found.</td></tr>
@@ -101,7 +104,6 @@
                     <div style="font-weight:700;margin-bottom:10px;">Items</div>
                     @foreach($selectedOrder->orderItems as $item)
                         <div class="detail-item" style="margin-bottom:10px;">
-                            <img src="{{ $item->product->image_url ?? asset('images/logo.png') }}" alt="{{ $item->product->name ?? 'Product' }}">
                             <div>
                                 <div style="font-weight:600;">{{ $item->product->name ?? 'Deleted product' }}</div>
                                 <div class="muted">{{ $item->quantity }} x &pound;{{ number_format((float) $item->purchase_price, 2) }}</div>
@@ -112,8 +114,13 @@
 
                 <div class="sec">
                     <div style="font-weight:700;margin-bottom:8px;">Shipping Address</div>
-                    <div class="muted">{{ $selectedOrder->user->street_address ?: '-' }}</div>
-                    <div class="muted">{{ trim(($selectedOrder->user->city ?: '') . ' ' . ($selectedOrder->user->postal_code ?: '')) ?: '-' }}</div>
+                    @if($selectedOrder->shippingAddress)
+                        <div class="muted">{{ $selectedOrder->shippingAddress->street_address }}</div>
+                        <div class="muted">{{ trim($selectedOrder->shippingAddress->city . ' ' . $selectedOrder->shippingAddress->postal_code) }}</div>
+                        <div class="muted">{{ $selectedOrder->shippingAddress->phone_number }}</div>
+                    @else
+                        <div class="muted">No shipping address recorded for this order.</div>
+                    @endif
                 </div>
 
                 <div class="total-row">

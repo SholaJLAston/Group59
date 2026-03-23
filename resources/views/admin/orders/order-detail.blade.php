@@ -51,6 +51,20 @@
             </tbody>
         </table>
     </div>
+
+    <div class="card">
+        <h3 style="margin-top:0;">Shipping Address</h3>
+        @if($order->shippingAddress)
+            <div>
+                <strong>{{ $order->user->first_name }} {{ $order->user->last_name }}</strong><br>
+                {{ $order->shippingAddress->street_address }}<br>
+                {{ $order->shippingAddress->city }}, {{ $order->shippingAddress->postal_code }}<br>
+                {{ $order->shippingAddress->phone_number }}
+            </div>
+        @else
+            <p style="margin:0;color:#6b7280;">No shipping address recorded for this order.</p>
+        @endif
+    </div>
 </div>
 @endsection
 

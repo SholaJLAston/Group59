@@ -10,7 +10,8 @@ class HomeController extends Controller
     //
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('name')->get(['id', 'name', 'description', 'image']);
+
         return view('home', compact('categories'));
     }
 }

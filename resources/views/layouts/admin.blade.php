@@ -365,6 +365,7 @@
                 <a href="{{ route('admin.orders') }}" class="admin-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}"><i class="fa-solid fa-box"></i> Orders</a>
                 <a href="{{ route('admin.customers.index') }}" class="admin-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}"><i class="fa-solid fa-users"></i> Customers</a>
                 <a href="{{ route('admin.products.index') }}" class="admin-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}"><i class="fa-solid fa-boxes-stacked"></i> Products</a>
+                <a href="{{ route('admin.categories.index') }}" class="admin-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}"><i class="fa-solid fa-folder-tree"></i> Categories</a>
 
                 <button type="button" id="inventoryToggle" class="admin-parent" aria-expanded="{{ $inventoryExpanded ? 'true' : 'false' }}">
                     <span class="admin-parent-left"><i class="fa-solid fa-warehouse"></i> Inventory</span>

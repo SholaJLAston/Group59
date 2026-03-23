@@ -20,6 +20,80 @@
 </head>
 <body>
 
+  @if (session('account_deleted'))
+    <style>
+      .global-toast {
+        position: fixed;
+        top: 18px;
+        right: 18px;
+        z-index: 2000;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #ecfdf3;
+        border: 1px solid #9ae6b4;
+        color: #14532d;
+        border-radius: 10px;
+        padding: 12px 14px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        font-size: 14px;
+        font-weight: 600;
+        max-width: 360px;
+        transform: translateY(-8px);
+        opacity: 0;
+        animation: toast-in 0.25s ease forwards;
+      }
+
+      .global-toast.hide {
+        animation: toast-out 0.25s ease forwards;
+      }
+
+      @keyframes toast-in {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes toast-out {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-8px); }
+      }
+
+      .global-toast-close {
+        border: none;
+        background: transparent;
+        color: #166534;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0;
+      }
+    </style>
+
+    <div id="globalToast" class="global-toast" role="status" aria-live="polite">
+      <i class="fa-solid fa-circle-check"></i>
+      <span>{{ session('account_deleted') }}</span>
+      <button type="button" class="global-toast-close" aria-label="Close" onclick="closeGlobalToast()">&times;</button>
+    </div>
+
+    <script>
+      window.closeGlobalToast = function () {
+        const toast = document.getElementById('globalToast');
+        if (!toast) {
+          return;
+        }
+
+        toast.classList.add('hide');
+        setTimeout(() => {
+          if (toast && toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 260);
+      };
+
+      setTimeout(window.closeGlobalToast, 3000);
+    </script>
+  @endif
+
     <!-- Navigation -->
   @include('layouts.nav')
 
@@ -441,6 +515,24 @@
         setOpen(shouldOpen);
       })();
     </script>
+      function closeGlobalToast() {
+        const toast = document.getElementById('globalToast');
+        if (!toast) {
+          return;
+        }
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 260);
+      }
+
+      (() => {
+        const toast = document.getElementById('globalToast');
+        if (!toast) {
+          return;
+        }
+        setTimeout(closeGlobalToast, 3500);
+      })();
+
+      (() => {
 
     <!-- Page-specific JS -->
     @yield('extra-js')

@@ -5,25 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ReturnModel extends Model
+class ShippingAddress extends Model
 {
-    protected $table = 'returns';
-
     protected $fillable = [
         'order_id',
-        'reason',
-        'comments',
-        'status',
-    ];
-
-    protected $casts = [
-        'reason' => 'string',
-        'status' => 'string',
+        'street_address',
+        'city',
+        'postal_code',
+        'phone_number',
     ];
 
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
-
 }

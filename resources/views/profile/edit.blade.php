@@ -32,6 +32,114 @@
             margin-bottom: 18px;
         }
 
+        .btn-delete-account {
+            background: #dc2626;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            height: 52px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.3px;
+            margin-top: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .btn-delete-account:hover {
+            background: #991b1b;
+        }
+
+        .delete-warning {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 14px 16px;
+            border-radius: 8px;
+            color: #7f1d1d;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .modal-delete {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-delete.show {
+            display: flex;
+        }
+
+        .modal-delete-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-delete-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 12px;
+        }
+
+        .modal-delete-text {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-delete-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-modal-cancel {
+            background: #e5e7eb;
+            border: none;
+            color: #374151;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #d1d5db;
+        }
+
+        .btn-modal-delete {
+            background: #dc2626;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-modal-delete:hover {
+            background: #991b1b;
+        }
+
         .settings-tab-btn {
             border: 1px solid #d8d8d8;
             background: #f2f2f2;
@@ -196,7 +304,7 @@
 
             .settings-tabs {
                 gap: 10px;
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
 
             .settings-title {
@@ -259,7 +367,7 @@
         <div class="settings-shell">
             <h1 class="settings-title">Account Settings</h1>
 
-            <div class="settings-tabs">
+            <div class="settings-tabs" style="grid-template-columns: 1fr 1fr 1fr;">
                 <button type="button" class="settings-tab-btn {{ $showSecurityByDefault ? '' : 'active' }}" data-tab="profile-panel">
                     <i class="far fa-user"></i>
                     Profile
@@ -267,6 +375,10 @@
                 <button type="button" class="settings-tab-btn {{ $showSecurityByDefault ? 'active' : '' }}" data-tab="security-panel">
                     <i class="fas fa-lock"></i>
                     Security
+                </button>
+                <button type="button" class="settings-tab-btn" data-tab="delete-panel">
+                    <i class="fas fa-trash"></i>
+                    Delete Account
                 </button>
             </div>
 
@@ -395,9 +507,82 @@
                         <button type="submit" class="btn-primary-settings">Change Password</button>
                     </form>
                 </div>
+
+                <div id="delete-panel" class="settings-panel">
+                    <h2 class="panel-title">Delete Account</h2>
+
+                    <div class="delete-warning">
+                        <strong style="color: #991b1b;">Warning:</strong> Once your account is deleted, all of your data will be permanently deleted. This action cannot be undone. Please make sure you have downloaded any important information before proceeding.
+                    </div>
+
+                    <p style="color: #6b7280; font-size: 14px; margin-bottom: 20px;">
+                        If you wish to delete your account permanently, click the button below. You will be asked to confirm your password.
+                    </p>
+
+                    <button type="button" class="btn-delete-account" onclick="document.getElementById('deleteAccountModal').classList.add('show')">
+                        <i class="fas fa-trash"></i>
+                        Delete My Account
+                    </button>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" class="modal-delete">
+        <div class="modal-delete-content">
+            <h3 class="modal-delete-title">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure?
+            </h3>
+            
+            <p class="modal-delete-text">
+                <strong>This action is permanent and cannot be reversed.</strong> All your orders, messages, and personal information will be deleted from our system.
+            </p>
+
+            <p class="modal-delete-text">
+                Please enter your password to confirm you want to permanently delete your account.
+            </p>
+
+            <form method="POST" action="{{ route('profile.destroy') }}" id="deleteAccountForm">
+                @csrf
+                @method('DELETE')
+
+                <div class="field">
+                    <label class="field-label" for="delete-password">Your Password</label>
+                    <input 
+                        id="delete-password" 
+                        name="password" 
+                        type="password" 
+                        placeholder="Enter your password"
+                        required
+                        autofocus
+                    >
+                    @if ($errors->userDeletion->has('password'))
+                        <div class="error-line">{{ $errors->userDeletion->first('password') }}</div>
+                    @endif
+                </div>
+
+                <div class="modal-delete-footer">
+                    <button type="button" class="btn-modal-cancel" onclick="document.getElementById('deleteAccountModal').classList.remove('show')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-modal-delete">
+                        Delete Account Permanently
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Close modal when clicking outside of it
+        document.getElementById('deleteAccountModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.remove('show');
+            }
+        });
+    </script>
 @endsection
 
 @section('extra-js')
@@ -420,6 +605,16 @@
                         panel.classList.add('active');
                     }
                 });
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    const modal = document.getElementById('deleteAccountModal');
+                    if (modal) {
+                        modal.classList.remove('show');
+                    }
+                }
             });
         })();
     </script>

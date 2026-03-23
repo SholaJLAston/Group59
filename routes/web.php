@@ -7,9 +7,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BasketController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
@@ -20,7 +22,7 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/products', [ProductController::class, 'index'])->name('products');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Contact form routes (cleaned up – only one GET name)
+// Contact form routes 
 Route::get('/contact', [ContactController::class, 'create'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
@@ -32,16 +34,19 @@ Route::post('/chatbot/query', [ChatbotController::class, 'query'])
 // Basket page is visible to guests; actions still require login.
 Route::get('/basket', [BasketController::class, 'index'])->name('basket');
 
-// Authenticated routes (dashboard, profile – you already had these)
+// Authenticated routes 
 Route::get('/dashboard', function () {
     if (auth()->user()?->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
 
-    return view('home');
+    return app(HomeController::class)->index();
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
     Route::get('/dashboard', [AdminInventoryController::class, 'dashboard'])->name('dashboard');
 
     Route::get('/settings', [ProfileController::class, 'edit'])
@@ -73,6 +78,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
     Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('categories.create');
+    Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
+    Route::get('/categories/{category}', [AdminCategoryController::class, 'show'])->name('categories.show');
+    Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
+    Route::patch('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
     Route::get('/products/{product}', [AdminProductController::class, 'show'])->name('products.show');
     Route::get('/products/{product}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
     Route::patch('/products/{product}', [AdminProductController::class, 'update'])->name('products.update');
@@ -105,10 +117,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/basket/items/{basketItem}', [BasketController::class, 'remove'])->name('basket.remove');
     Route::delete('/basket', [BasketController::class, 'clear'])->name('basket.clear');
 
+    // checkout flow
+    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [OrderController::class, 'processCheckout'])->name('checkout.process');
+
     // customer orders
     Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('order.show');
-    Route::post('/orders', [OrderController::class, 'store'])->name('order.store');
+
+    // customer returns
+    Route::get('/returns', [ReturnController::class, 'index'])->name('returns.index');
+    Route::get('/returns/{return}', [ReturnController::class, 'show'])->name('returns.show');
+    Route::post('/orders/{order}/returns', [ReturnController::class, 'store'])->name('returns.store');
 
     // product reviews
     Route::post('/products/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])
