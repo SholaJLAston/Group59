@@ -14,11 +14,13 @@ class Product extends Model{
         'description',
         'price',
         'stock_quantity',
+        'low_stock_threshold',
         'image_url',
     ];
 
     protected $casts = [
         'stock_quantity' => 'integer',
+        'low_stock_threshold' => 'integer',
         'price' => 'decimal:2',
     ];
 
@@ -37,5 +39,39 @@ class Product extends Model{
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
 
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    /**
+     * Get the stock status based on current stock quantity
+     */
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->stock_quantity <= 0) {
+            return 'Out of Stock';
+        }
+
+        $threshold = $this->low_stock_threshold ?? 5;
+
+        if ($this->stock_quantity <= $threshold) {
+            return 'Low Stock';
+        }
+
+        return 'In Stock';
+    }
+
+    /**
+     * Get the stock level
+     */
+    public function getStockLevelAttribute(): int
+    {
+        return $this->stock_quantity;
+    }
 }

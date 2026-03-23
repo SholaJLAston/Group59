@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +15,19 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request): View|ViewContract|RedirectResponse
     {
+        if ($request->routeIs('admin.*') && $request->user()->role !== 'admin') {
+            return Redirect::route('dashboard');
+        }
+
+        if (! $request->routeIs('admin.*') && $request->user()->role === 'admin') {
+            return Redirect::route('admin.settings');
+        }
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'isAdminSettings' => $request->routeIs('admin.*'),
         ]);
     }
 
@@ -26,6 +36,14 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        if ($request->routeIs('admin.*') && $request->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        if (! $request->routeIs('admin.*') && $request->user()->role === 'admin') {
+            abort(403);
+        }
+
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -34,7 +52,9 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $settingsRoute = $request->routeIs('admin.*') ? 'admin.settings' : 'profile.edit';
+
+        return Redirect::route($settingsRoute)->with('status', 'profile-updated');
     }
 
     /**
@@ -55,6 +75,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::to('/')->with('account_deleted', 'Your account deleted successfully.');
     }
 }

@@ -1,52 +1,90 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+@extends('layouts.auth')
+
+@section('title', 'Create Account')
+
+@section('content')
+  <section class="auth-page">
+    <div class="auth-header">
+      <h1>Create Account</h1>
+      <p>Set up your Apex account in one step.</p>
+    </div>
+
+    <div class="auth-card">
+      <form method="POST" action="{{ route('register') }}" class="auth-stack">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <div class="auth-grid-2">
+          <div class="auth-field">
+            <label for="first_name">First Name</label>
+            <input id="first_name" class="auth-input" type="text" name="first_name" value="{{ old('first_name') }}" required autofocus autocomplete="given-name">
+            @error('first_name')
+              <div class="auth-error">{{ $message }}</div>
+            @enderror
+          </div>
+
+          <div class="auth-field">
+            <label for="last_name">Last Name</label>
+            <input id="last_name" class="auth-input" type="text" name="last_name" value="{{ old('last_name') }}" required autocomplete="family-name">
+            @error('last_name')
+              <div class="auth-error">{{ $message }}</div>
+            @enderror
+          </div>
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="auth-field">
+          <label for="email">Email Address</label>
+          <input id="email" class="auth-input" type="email" name="email" value="{{ old('email') }}" required autocomplete="username">
+          @error('email')
+            <div class="auth-error">{{ $message }}</div>
+          @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <div class="auth-grid-2">
+          <div class="auth-field">
+            <label for="password">Password</label>
+            <div class="auth-input-wrap">
+              <input id="password" class="auth-input" type="password" name="password" required autocomplete="new-password">
+              <button type="button" class="auth-toggle" data-toggle-password="password" aria-label="Toggle password visibility">
+                <i class="far fa-eye"></i>
+              </button>
+            </div>
+            @error('password')
+              <div class="auth-error">{{ $message }}</div>
+            @enderror
+          </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+          <div class="auth-field">
+            <label for="password_confirmation">Confirm Password</label>
+            <input id="password_confirmation" class="auth-input" type="password" name="password_confirmation" required autocomplete="new-password">
+            @error('password_confirmation')
+              <div class="auth-error">{{ $message }}</div>
+            @enderror
+          </div>
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+        <button type="submit" class="auth-btn">Create Account</button>
+      </form>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+      <div class="auth-meta">
+        Already registered? <a class="auth-link" href="{{ route('login') }}">Sign in</a>
+      </div>
+    </div>
+  </section>
+@endsection
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+@section('extra-js')
+  <script>
+    document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetId = button.getAttribute('data-toggle-password');
+        const input = document.getElementById(targetId);
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+        if (!input) {
+          return;
+        }
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+    });
+  </script>
+@endsection

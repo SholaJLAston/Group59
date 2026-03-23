@@ -1,27 +1,50 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
-    </div>
+@extends('layouts.auth')
 
-    <form method="POST" action="{{ route('password.confirm') }}">
-        @csrf
+@section('title', 'Confirm Password')
 
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+@section('content')
+    <section class="auth-page">
+        <div class="auth-header">
+            <h1>Confirm Password</h1>
+            <p>Please confirm your password to continue.</p>
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-primary-button>
-                {{ __('Confirm') }}
-            </x-primary-button>
+        <div class="auth-card">
+            <form method="POST" action="{{ route('password.confirm') }}" class="auth-stack">
+                @csrf
+
+                <div class="auth-field">
+                    <label for="password">Password</label>
+                    <div class="auth-input-wrap">
+                        <input id="password" class="auth-input" type="password" name="password" required autocomplete="current-password">
+                        <button type="button" class="auth-toggle" data-toggle-password="password" aria-label="Toggle password visibility">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                        <div class="auth-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <button type="submit" class="auth-btn">Confirm</button>
+            </form>
         </div>
-    </form>
-</x-guest-layout>
+    </section>
+@endsection
+
+@section('extra-js')
+    <script>
+        document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-toggle-password');
+                const input = document.getElementById(targetId);
+
+                if (!input) {
+                    return;
+                }
+
+                input.type = input.type === 'password' ? 'text' : 'password';
+            });
+        });
+    </script>
+@endsection
