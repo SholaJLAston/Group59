@@ -1,5 +1,7 @@
 # Project Setup Guide (Laravel Sail)
 
+[![gitcgr](https://gitcgr.com/badge/SholaJLAston/Group59.svg)](https://gitcgr.com/SholaJLAston/Group59)
+
 This project uses Laravel Sail as its development environment. Sail provides a complete Docker-based setup, allowing contributors to work without installing PHP, Composer, Node, or MySQL locally. Only Docker (and WSL2 on Windows) is required. The documentation for Laravel Sail is available on [the Laravel website](https://laravel.com/docs/12.x/sail) and provides more details.
 
 ---
